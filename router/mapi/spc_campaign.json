@@ -1,0 +1,219 @@
+
+            {
+                "click_tracking_url": "https://track.tenjin.io/v0/tiktok/ftC56bcUEPp31zlNEgKgWI?bundle_id=com.amelosinteractive.snake&platform=android&click_id=__CALLBACK_PARAM__&advertising_id=__GAID__&campaign_id=__AID__&campaign_name=__AID_NAME__&creative_name=__CID_NAME__&site_id=__PLACEMENT__",
+                "app_type": "APP_ANDROID",
+                "deep_bid_type": "DEFAULT",
+                "exclude_age_under_eighteen": true,
+                "location_ids": [
+                    "6252001"
+                ],
+                "carousel_image_labels": null,
+                "deeplink": "",
+                "campaign_app_profile_page_state": "UNSET",
+                "languages": [],
+                "app_promotion_type": "APP_INSTALL",
+                "schedule_start_time": "2024-10-14 18:17:53",
+                "schedule_end_time": "2034-10-12 18:17:53",
+                "is_advanced_dedicated_campaign": false,
+                "scheduled_budget": 0.0,
+                "advertiser_id": "6800142656270761989",
+                "schedule_type": "SCHEDULE_FROM_NOW",
+                "campaign_type": "REGULAR_CAMPAIGN",
+                "page_list": null,
+                "optimization_goal": "INSTALL",
+                "identity_type": "CUSTOMIZED_USER",
+                "click_attribution_window": "SEVEN_DAYS",
+                "engaged_view_attribution_window": "ONE_DAY",
+                "budget_mode": "BUDGET_MODE_DYNAMIC_DAILY_BUDGET",
+                "attribution_event_count": "ONCE",
+                "share_disabled": false,
+                "promotion_website_type": null,
+                "product_set_id": null,
+                "excluded_audience_ids": [
+                    "164953156"
+                ],
+                "view_attribution_window": "ONE_DAY",
+                "app_id": "6810026180205461510",
+                "campaign_secondary_status": "CAMPAIGN_STATUS_ENABLE",
+                "promotion_type": "APP_ANDROID",
+                "campaign_id": "1812915048062993",
+                "modify_time": "2024-10-16 01:36:49",
+                "placement_type": "PLACEMENT_TYPE_AUTOMATIC",
+                "deeplink_type": null,
+                "catalog_id": null,
+                "dayparting": "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+                "web_all_in_one_catalog_status": "UNSET",
+                "bid_type": "BID_TYPE_CUSTOM",
+                "product_ids": null,
+                "video_download_disabled": false,
+                "billing_event": "OCPM",
+                "operation_status": "ENABLE",
+                "shopping_ads_fallback_type": null,
+                "call_to_action_list": [],
+                "comment_disabled": false,
+                "product_specific_type": null,
+                "blocked_pangle_app_ids": null,
+                "app_name": "Snake.io - Fun Snake .io Games",
+                "automatic_add_on_enabled": null,
+                "spc_type": "UNSET",
+                "roas_bid": null,
+                "identity_id": "7418420203418451976",
+                "gender": "GENDER_UNLIMITED",
+                "objective_type": "APP_PROMOTION",
+                "pixel_id": null,
+                "conversion_bid_price": 1.0,
+                "catalog_authorized_bc_id": null,
+                "campaign_name": "Snake GP_Smart test campaign_US",
+                "placements": [
+                    "PLACEMENT_TIKTOK",
+                    "PLACEMENT_PANGLE"
+                ],
+                "special_industries": null,
+                "catalog_creative_toggle": null,
+                "budget": 200.0,
+                "landing_page_urls": null,
+                "card_list": [
+                    {
+                        "card_id": "7425674979029502984"
+                    }
+                ],
+                "skip_learning_phase": true,
+                "spc_audience_age": "18+",
+                "bid_price": null,
+                "carousel_image_index": null,
+                "adgroup_secondary_status": "ADGROUP_STATUS_DELIVERY_OK",
+                "media_info_list": [
+                    {
+                        "media_info": {
+                            "video_info": {
+                                "file_name": "Trend4.mp4",
+                                "video_id": "v10033g50000cbajpqrc77udlilj86kg"
+                            },
+                            "identity_id": null,
+                            "tiktok_item_id": null,
+                            "aigc_disclosure_type": "NOT_DECLARED",
+                            "image_info": [
+                                {
+                                    "web_uri": "v0201/5fe131c47bfbcf8bd83cfcb642e6effa"
+                                }
+                            ],
+                            "identity_type": null,
+                            "music_info": null
+                        }
+                    },
+                    {
+                        "media_info": {
+                            "video_info": {
+                                "file_name": "V_noob_1080x1920_25s.mp4",
+                                "video_id": "v10033g50000cai2hgrc77ueqa4r2u1g"
+                            },
+                            "identity_id": null,
+                            "tiktok_item_id": null,
+                            "aigc_disclosure_type": "NOT_DECLARED",
+                            "image_info": [
+                                {
+                                    "web_uri": "v0201/e6f2c82fa5fe072d08ba955f8fa286c5"
+                                }
+                            ],
+                            "identity_type": null,
+                            "music_info": null
+                        }
+                    },
+                    {
+                        "media_info": {
+                            "video_info": {
+                                "file_name": "Trend3.mp4",
+                                "video_id": "v10033g50000cai2i6bc77ubnuf9rok0"
+                            },
+                            "identity_id": null,
+                            "tiktok_item_id": null,
+                            "aigc_disclosure_type": "NOT_DECLARED",
+                            "image_info": [
+                                {
+                                    "web_uri": "v0201/56096e47ed71109bb9fff2c94d0ce44a"
+                                }
+                            ],
+                            "identity_type": null,
+                            "music_info": null
+                        }
+                    },
+                    {
+                        "media_info": {
+                            "video_info": {
+                                "file_name": "V_slowmotion_1080x1920_15s.mp4",
+                                "video_id": "v09033f60000bpssbv8biap32hh7adcg"
+                            },
+                            "identity_id": null,
+                            "tiktok_item_id": null,
+                            "aigc_disclosure_type": "NOT_DECLARED",
+                            "image_info": [
+                                {
+                                    "web_uri": "v0201/bcef688da00313c601c4b046174ebb22"
+                                }
+                            ],
+                            "identity_type": null,
+                            "music_info": null
+                        }
+                    },
+                    {
+                        "media_info": {
+                            "video_info": {
+                                "file_name": "V_aclapaway_1080x1920_18s.mp4",
+                                "video_id": "v10033g50000cb2j8ibc77u0u2doopmg"
+                            },
+                            "identity_id": null,
+                            "tiktok_item_id": null,
+                            "aigc_disclosure_type": "NOT_DECLARED",
+                            "image_info": [
+                                {
+                                    "web_uri": "v0201/640adc274e9b2f8677572bde82b32490"
+                                }
+                            ],
+                            "identity_type": null,
+                            "music_info": null
+                        }
+                    },
+                    {
+                        "media_info": {
+                            "video_info": {
+                                "file_name": "TTCC_0061_Snake.io - Fun Online Arcade .io Game",
+                                "video_id": "v0911dg40001ch07nt3c77udj6atrda0"
+                            },
+                            "identity_id": null,
+                            "tiktok_item_id": null,
+                            "aigc_disclosure_type": "NOT_DECLARED",
+                            "image_info": [
+                                {
+                                    "web_uri": "tos-maliva-v-2c3654-us/04e87144a22c4852a84c3b5c3f078d8d"
+                                }
+                            ],
+                            "identity_type": null,
+                            "music_info": null
+                        }
+                    }
+                ],
+                "product_source": null,
+                "call_to_action_id": "7425700054826011655",
+                "impression_tracking_url": "https://track.tenjin.io/v0/tiktok/ftC56bcUEPp31zlNEgKgWI?bundle_id=com.amelosinteractive.snake&platform=android&click_id=__CALLBACK_PARAM__&advertising_id=__GAID__&campaign_id=__AID__&campaign_name=__AID_NAME__&creative_name=__CID_NAME__&site_id=__PLACEMENT__&impression=true",
+                "app_download_url": "https://play.google.com/store/apps/details?id=com.amelosinteractive.snake&hl=en_US",
+                "create_time": "2024-10-14 18:29:26",
+                "is_smart_performance_campaign": true,
+                "title_list": [
+                    {
+                        "title": "Grow the biggest snake in this battle royale!"
+                    },
+                    {
+                        "title": "Join the clash and action online!"
+                    },
+                    {
+                        "title": "Play the most popular snake arcade .io game!"
+                    },
+                    {
+                        "title": "Quick no lag io game. Popular game of 2024!"
+                    },
+                    {
+                        "title": "Most popular Snake io game"
+                    }
+                ],
+                "optimization_event": "ACTIVE"
+            }

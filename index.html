@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engaged Session Audit Tool</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/home.css">
+
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <a href="/" target="_self">Home</a>
+        <a href="engaged-session" target="_self">Engaged Session</a>
+        <a href="app" target="_self">App S+</a>
+    </header>
+    <br>
+    <br>
+    
+    
+
+    <div class="container">
+        <div class="left">
+            <section class="key-info">
+                <h2>App S+</h2>
+                <div class="info-item">
+                    <strong>HQ Test Doc:</strong> <span id="productName">doc link</span>
+                </div>
+                <div class="info-item">
+                    <strong>PMM POC:</strong> <span id="pmmName">Wan Ting / Rachel</span>
+                </div>
+                <div class="info-item">
+                    <strong>TSC POC:</strong> <span id="tscName">Franklin / Yuk Fang</span>
+                </div>
+            </section>
+        </div>
+    
+        <div class="middle">
+            <section class="key-info">
+                <h2>Engaged Session</h2>
+                <div class="info-item">
+                    <strong>HQ Test Doc:</strong> <span id="productName">doc link</span>
+                </div>
+                <div class="info-item">
+                    <strong>PMM POC:</strong> <span id="pmmName">Rebecca</span>
+                </div>
+                <div class="info-item">
+                    <strong>TSC POC:</strong> <span id="tscName">Yuk Fang</span>
+                </div>
+            </section>
+        </div>
+    
+        <div class="right">
+            <section class="key-info">
+                <h2> TBD</h2>
+                <div class="info-item">
+                    <strong>HQ Test Doc:</strong> <span id="productName">doc link</span>
+                </div>
+                <div class="info-item">
+                    <strong>PMM POC:</strong> <span id="pmmName">X</span>
+                </div>
+                <div class="info-item">
+                    <strong>TSC POC:</strong> <span id="tscName">Y</span>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+
+
+
+
+    <script>
+        // Function to highlight the active link based on the current URL
+        function highlightActiveLink() {
+          // Get the current page URL
+          const currentPage = window.location.pathname;
+      
+          // Get all the header links
+          const links = document.querySelectorAll('header a');
+      
+          // Loop through all links and add/remove the 'active' class
+          links.forEach(link => {
+            // Reset active state
+            link.classList.remove('active');
+      
+            // Special case for the "Home" link ("/")
+            if(currentPage === '/' && link.getAttribute('href') === '/') {
+              link.classList.add('active');
+            }  
+            if(currentPage.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/') {
+              link.classList.add('active'); // Add 'active' class to the matching link
+            }
+          });
+        }
+      
+        // Call the function to highlight the active link when the page loads
+        document.addEventListener("DOMContentLoaded", highlightActiveLink);
+      </script>
+</body>
+</html>

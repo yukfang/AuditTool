@@ -1,0 +1,52 @@
+/* Container for the three parts */
+.container {
+    display: flex;
+    justify-content: space-between; /* Distribute the space between the three sections */
+    gap: 20px; /* Space between the sections */
+    margin-top: 20px;
+    flex-wrap: wrap; /* Allow sections to wrap on smaller screens */
+    background-color: transparent; /* Make the container's background transparent */
+    border: none; /* Remove border (if any) */
+    box-shadow: none; /* Remove box shadow (if any) */
+}
+
+/* Style for each section */
+.container .left, .container .middle, .container .right {
+    width: 28%; /* Each part takes up 28% of the container width */
+    padding: 15px;
+    background-color: transparent; /* Make each section's background transparent */
+    border-radius: 8px;
+    box-shadow: none; /* Remove box shadow */
+}
+
+/* Title styling inside each section */
+.container .key-info h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Styling for each info item */
+.container .info-item {
+    font-size: 1em;
+    color: #2d3436;
+    margin-bottom: 8px;
+}
+
+.container .info-item strong {
+    font-weight: bold;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+    /* Stack the sections vertically on smaller screens */
+    .container {
+        flex-direction: column; /* Stack vertically */
+        align-items: center; /* Center the sections */
+    }
+
+    /* Make each section take up the full width on small screens */
+    .container .left, .container .middle, .container .right {
+        width: 100%;
+        margin-bottom: 15px; /* Add space between stacked sections */
+    }
+}

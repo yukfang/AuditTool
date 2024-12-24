@@ -1,0 +1,249 @@
+/* Global Styles */
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f9;
+}
+
+/* Header Styles */
+header {
+  background-color: #2d3436; /* Dark background for header */
+  color: white;
+  padding: 15px 0;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2em;
+  padding: 10px 15px;
+  margin: 0 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+header a:hover {
+  background-color: #dfe6e9;
+}
+
+header a.active {
+  background-color: #0984e3;
+  font-weight: bold;
+}
+
+/* Key Information Section */
+
+.key-info {
+  max-width: 800px;
+  margin: 100px auto 30px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid #0984e3; /* Blue accent border */
+}
+
+.key-info h2 {
+  text-align: center;
+  font-size: 2em;
+  color: #2d3436;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1em;
+  padding: 12px;
+  border-bottom: 1px solid #e1e1e1;
+  color: #2d3436;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item strong {
+  color: #0984e3;
+}
+
+.info-item span {
+  color: #636e72;
+  font-weight: bold;
+}
+
+/* Style for the input container */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Flexbox layout for the first row (Audit button and inputs) */
+.input-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.input-row button,
+.input-row input {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.input-row button {
+  background-color: #fe2c55;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 150px;
+}
+
+.input-row input {
+  max-width: 200px;
+  flex: 1;
+}
+
+.input-row button:hover {
+  background-color: #ff5d57;
+}
+
+/* Button container for Coach, Ebay, etc. */
+.button-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.button-row button {
+  width: 150px;
+  margin-right: 10px;
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-row button:hover {
+  background-color: #0056b3;
+}
+
+.button-row button:last-child {
+  margin-right: 0;
+}
+
+/* Style for progress bar */
+#progressBar {
+  width: 100%;
+  height: 5px;
+  border-radius: 5px;
+  appearance: none;
+  background-color: #e1e1e1;
+  margin-top: 10px;
+}
+
+#progressBar::-webkit-progress-bar {
+  background-color: #e1e1e1;
+  border-radius: 5px;
+}
+
+#progressBar::-webkit-progress-value {
+  background-color: #fe2c55;
+  border-radius: 5px;
+}
+
+/* Comparison Table and Audit Table Styles */
+.comparison-table, .audit-table {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  table-layout: auto;
+}
+
+.comparison-table th, .comparison-table td, .audit-table th, .audit-table td {
+  padding: 15px;
+  text-align: left;
+  border: 1px solid #ddd;
+  max-width: 300px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.comparison-table th, .audit-table th {
+  background-color: #ff5d57;
+  color: white;
+  font-weight: bold;
+}
+
+.comparison-table tr:nth-child(even), .audit-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Collapsible Section Styles */
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+
+/* Input Focus & Hover Styles */
+input:focus, button:focus {
+  outline: none;
+  border-color: #0984e3;
+}
+
+input:hover, button:hover {
+  background-color: #dfe6e9;
+}
+
+/* Utility Classes */
+.center {
+  text-align: center;
+}
+
+.margin-top {
+  margin-top: 20px;
+}

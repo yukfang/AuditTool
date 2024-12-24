@@ -1,0 +1,6 @@
+# TODO: replace <your-function-id> with your real function id.
+id: <your-function-id>
+runtime: node18/v1
+protocol: http
+description: default code of http-server koa runtime - node18/v1, See doc https://bytedance.feishu.cn/docx/AtnTdL5sLoJ8z9xZgIic9rf9nAg
+template_author: gaozhenxi@bytedance.com
