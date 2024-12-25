@@ -72,7 +72,7 @@
     </div>
 
   <script>
-    function mergeData(campaignData, adgroupData, creativeData) {
+    function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
         const merged = { ...adgroupData };
         // Append Creative Data
         merged['creativeData'] = creativeData
@@ -82,6 +82,10 @@
 
         merged['video_number'] = merged['videos'].length
         merged['text_number']  = [... new Set(creativeData.map(x => x.ad_text))].length
+
+        merged['changesummary'] = changeSummary
+        merged['changelog'] = changeSummary.records.map(x=>x.activityDetails)
+
 
 
 
@@ -123,7 +127,7 @@
     }
 
     async function fetchAndMergeData(advertiserId, adgroupId, progressBar) {
-        console.log(`fetch ad group data : ${adgroupId} `)
+        console.log(`1. fetch ad group data : ${adgroupId} `)
       // Fetch Ad Group Data
         const adgroupData = await fetchAdgroupData(advertiserId, adgroupId);
         // console.log(adgroupData)
@@ -142,6 +146,8 @@
 
 
         // Fetch Creative Data 
+        console.log(`3. fetch creative data : ${adgroupId} `)
+
         const creativeData = await getCreativeData(advertiserId,  adgroupId);
         // if (!isSpc) {
         //     const media_info_list_normal = await getCreativeData(advertiserId, null, adgroupId);
@@ -149,7 +155,12 @@
         // }
         progressBar.value += 10
 
-        return mergeData(campaignData, adgroupData, creativeData)
+        /* 4. Fetch Change Log*/
+        console.log(`4. fetch changelog data : ${adgroupId} `)
+        const changeSummary = await getChangeSummary(advertiserId,  adgroupId)
+        
+
+        return mergeData(campaignData, adgroupData, creativeData, changeSummary)
         // return {campaignData, adgroupData, creativeData}
     }
 
@@ -301,6 +312,9 @@
           "video_number",
           "videos",
           "ad_text",
+        ],
+        "Change Summary" : [
+          "changelog",
         ],
         "Other": [
 

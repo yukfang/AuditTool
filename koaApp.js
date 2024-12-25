@@ -12,6 +12,7 @@ const ad_get           = require('./router/mapi/ad_get')
 const adgroup_get      = require('./router/mapi/adgroup_get')
 const campaign_get     = require('./router/mapi/campaign_get')
 const campaign_spc_get = require('./router/mapi/campaign_spc_get')
+const change_summary_get = require('./router/mapi/changelog')
 
 koaApp.use(koaStatic(path.join(__dirname, 'assets'))); // 本地
 
@@ -59,7 +60,13 @@ koaApp.use(async (ctx, next) => {
     const { advertiser_id, filtering } = ctx.request.body;
     const campaign_data = await campaign_spc_get(advertiser_id, filtering.campaign_ids)
     ctx.body = campaign_data
-  } else {
+  } else if(ctx.path === '/open_api/v1.3/changesummary/') {
+    const { advertiser_id, adgroup_id } = ctx.request.body;
+    const change_summary = await change_summary_get(advertiser_id, adgroup_id)
+    console.log(`return change summary ${change_summary}`)
+    ctx.body = change_summary
+  } 
+  else {
       // ctx.body = '' + ctx.path;
       // next();
   }

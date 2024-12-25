@@ -1,3 +1,26 @@
+async function getChangeSummary(advertiserId, adgroupId) {
+    console.log(`get change summary`)
+    const url = '/open_api/v1.3/changesummary/'
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                advertiser_id: advertiserId,
+                adgroup_id: adgroupId
+            })
+        }); // ignore_security_alert SSRF
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Error fetching change log from ${url}:`, error);
+        alert("Failed to fetch campaign data. Please check the console for details.");
+        throw error;
+    }
+}
 async function fetchAdgroupData(advertiserId, adgroupId) {
     return await fetchData('/open_api/v1.3/adgroup/get/', advertiserId, null, adgroupId);
 }
@@ -11,6 +34,7 @@ async function getCreativeData(advertiserId, adgroupId) {
     console.log(`creative filter = ${adgroupId}`)
     return await fetchData('/open_api/v1.3/ad/get/', advertiserId, null,  adgroupId);
 }
+
 
 async function fetchData(url, advertiserId, campaignId, adgroupId) { 
     try {
@@ -40,4 +64,32 @@ async function fetchData(url, advertiserId, campaignId, adgroupId) {
         alert("Failed to fetch campaign data. Please check the console for details.");
         throw error;
     }
+}
+
+async function getChangeLogData(advertiserId, campaignId, adgroupId){
+    /** 1.Create Download Task */
+
+
+    /** 2. Check Task Status */
+
+
+    /** 3. Download  */
+}
+async function createChangeLogTask(advertiserId){
+    const url = "/v1.3/changelog/task/create/"
+    const response = await fetch(url, {
+        method: 'POST',
+        page_size: 1000,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            advertiser_id: advertiserId,
+            start_time:  "2024-12-01 00:00:00",
+            end_time:  "2024-12-30 00:00:00",
+            module: "STATUS",
+            object_ids: [],
+            object_type: "ADGROUP"
+        })
+    })
 }
