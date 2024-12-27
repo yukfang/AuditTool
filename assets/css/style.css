@@ -178,7 +178,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* Comparison Table and Audit Table Styles */
-.comparison-table, .audit-table {
+.comparison-table, .audit-table, .changelog-table  {
   width: 100%;
   max-width: 1000px;
   margin: 20px auto;
