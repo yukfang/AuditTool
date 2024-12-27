@@ -1,5 +1,4 @@
 async function getChangeSummary(advertiserId, adgroupId) {
-    console.log(`get change summary`)
     const url = '/open_api/v1.3/changesummary/'
 
     try {

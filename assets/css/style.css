@@ -180,14 +180,14 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Comparison Table and Audit Table Styles */
 .comparison-table, .audit-table {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 20px auto;
   border-collapse: collapse;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   table-layout: auto;
 }
 
-.comparison-table th, .comparison-table td, .audit-table th, .audit-table td {
+.comparison-table th, .comparison-table td, .audit-table th, .audit-table td, .changelog-table th, .changelog-table td {
   padding: 15px;
   text-align: left;
   border: 1px solid #ddd;
@@ -196,13 +196,13 @@ input[type="number"]::-webkit-inner-spin-button {
   white-space: normal;
 }
 
-.comparison-table th, .audit-table th {
+.comparison-table th, .audit-table th, .changelog-table th {
   background-color: #ff5d57;
   color: white;
   font-weight: bold;
 }
 
-.comparison-table tr:nth-child(even), .audit-table tr:nth-child(even) {
+.comparison-table tr:nth-child(even), .audit-table tr:nth-child(even), .changelog-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 

@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Engaged Session Audit Tool</title>
   <link rel="stylesheet" href="./css/style.css">
-
-
 </head>
 <body>
     <!-- Header Section -->
@@ -53,6 +51,22 @@
         </tbody>
       </table>
     </div>
+
+    <h2 class="collapsible active">Changelog - Click to Expand</h2>
+    <div class="content" style="display: block;">
+      <table class="changelog-table" id="changelogTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Test Group Changes</th>
+            <th>Control Group Changes</th>
+          </tr>
+        </thead>
+        <tbody id="changelogBody">
+          <!-- Changelog results will be injected here -->
+        </tbody>
+      </table>
+    </div>
   
     <h2 class="collapsible">Meta Data - Click to Expand</h2>
     <div class="content">
@@ -70,6 +84,7 @@
         </tbody>
       </table>
     </div>
+
 
   <script>
     function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
@@ -159,7 +174,7 @@
         console.log(`4. fetch changelog data : ${adgroupId} `)
         const changeSummary = await getChangeSummary(advertiserId,  adgroupId)
         
-
+        console.log(changeSummary)
         return mergeData(campaignData, adgroupData, creativeData, changeSummary)
         // return {campaignData, adgroupData, creativeData}
     }
@@ -214,11 +229,50 @@
 
       updateTable([testCampaign, controlCampaign]);
       updateAuditTable([testCampaign, controlCampaign]);
+
+      const changeLogs = extractChangelog(testCampaign.changelog, controlCampaign.changelog);
+      console.log(changeLogs);
+      updateChangelogTable(changeLogs);
       progressBar.value = 100; // Update progress bar to 100%
 
     } catch (error) {
       console.error("Error comparing campaigns:", error);
     }
+  }
+
+  function extractChangelog(testCampaign, controlCampaign) {
+    const testChanges = testCampaign.map(record => ({
+        date: record.substring(0, 10),
+        testGroupChanges: record.substring(18, record.length),
+        controlGroupChanges: ''
+    }));
+
+    const controlChanges = controlCampaign.map(record => ({
+      date: record.substring(0, 10),
+      testGroupChanges: '',
+        controlGroupChanges: record.substring(18, record.length),
+    }));
+
+    const changesMap = new Map();
+
+    testChanges.forEach(change => {
+        if (!changesMap.has(change.date)) {
+            changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
+        }
+        changesMap.get(change.date).testGroupChanges += change.testGroupChanges + '\r\n';
+    });
+
+    controlChanges.forEach(change => {
+        if (!changesMap.has(change.date)) {
+            changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
+        }
+        changesMap.get(change.date).controlGroupChanges += change.controlGroupChanges + '\r\n';
+    });
+
+    const combinedChanges = Array.from(changesMap.values());
+    combinedChanges.sort((b, a) => new Date(a.date) - new Date(b.date));
+
+    return combinedChanges;
   }
 
     function updateTable(campaigns) {
@@ -420,5 +474,30 @@
     document.addEventListener("DOMContentLoaded", highlightActiveLink);
   </script>
   
+  <script>
+    function updateChangelogTable(sampleChanges) {
+        const changelogBody = document.getElementById('changelogBody');
+        changelogBody.innerHTML = '';
+
+        sampleChanges.forEach(change => {
+            const row = document.createElement('tr');
+            
+            const dateCell = document.createElement('td');
+            dateCell.textContent = change.date;
+            row.appendChild(dateCell);
+            
+            const testGroupCell = document.createElement('td');
+            testGroupCell.innerHTML = change.testGroupChanges.trim().replace(/\r\n/g, '<br>');
+            row.appendChild(testGroupCell);
+            
+            const controlGroupCell = document.createElement('td');
+            controlGroupCell.innerHTML = change.controlGroupChanges.trim().replace(/\r\n/g, '<br>');
+            row.appendChild(controlGroupCell);
+            
+            changelogBody.appendChild(row);
+        });
+    }
+</script>
+
 </body>
 </html>
