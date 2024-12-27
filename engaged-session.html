@@ -98,7 +98,7 @@
         merged['video_number'] = merged['videos'].length
         merged['text_number']  = [... new Set(creativeData.map(x => x.ad_text))].length
 
-        merged['changesummary'] = changeSummary
+        merged['changesummary'] = changeSummary.summary
         merged['changelog'] = changeSummary.records.map(x=>x.activityDetails)
 
 
@@ -370,7 +370,8 @@
           "ad_text",
         ],
         "Change Summary" : [
-          "changelog",
+          // "changelog",
+          "changesummary"
         ],
         "Other": [
 
