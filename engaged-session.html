@@ -30,6 +30,13 @@
         <button onclick="autoFillTestData('6927760983595155458', '1818349487376386', '1818349493967922')">Coach</button>
         <button onclick="autoFillTestData('7140346782873075713', '1817462395527201', '1817462391068674')">Ebay</button>
         <button onclick="autoFillTestData('7325100941009731586', '1817623149104178', '1817623143443474')">Peugeot</button>
+        <button onclick="autoFillTestData('6961909382456049665', '1816191970575410', '1816355262671905')">Apple</button>
+        <button onclick="autoFillTestData('6972294261718925314', '1816914309103649', '1816914687288354')">Kate</button>
+        <button onclick="autoFillTestData('6935480705417822209', '1819325195298866', '1819326282908674')">COTY UK</button>
+        <button onclick="autoFillTestData('6994390460831678466', '1818757169762401', '1818757165281361')">Emirates 2</button>
+        <button onclick="autoFillTestData('6994390460831678466', '1818758613361713', '1818758610491394')">Emirates 3</button>
+        <button onclick="autoFillTestData('7030739817839247361', '1820221105118258', '1820222726932482')">Leroy</button>
+
       </div>
     
       <progress id="progressBar" value="0" max="100"></progress>
@@ -92,8 +99,10 @@
         // Append Creative Data
         merged['creativeData'] = creativeData
         merged['creative_number'] = creativeData.length
-        merged['videos'] = [... new Set(creativeData.map(x => x.video_id))]
-        merged['ad_text'] = [... new Set(creativeData.map(x => x.ad_text))]
+        merged['videos']            = [... new Set(creativeData.map(x => x.video_id))]
+        merged['ad_text']           = [... new Set(creativeData.map(x => x.ad_text))]
+        merged['landing_page_url']  = [... new Set(creativeData.map(x => x.landing_page_url))].sort()
+
 
         merged['video_number'] = merged['videos'].length
         merged['text_number']  = [... new Set(creativeData.map(x => x.ad_text))].length
@@ -364,6 +373,7 @@
         ],
         "Creatives": [
           "creative_number",
+          "landing_page_url",
           "text_number",
           "video_number",
           "videos",
@@ -478,11 +488,11 @@
   </script>
   
   <script>
-    function updateChangelogTable(sampleChanges) {
+    function updateChangelogTable(changeLog) {
         const changelogBody = document.getElementById('changelogBody');
         changelogBody.innerHTML = '';
 
-        sampleChanges.forEach(change => {
+        changeLog.forEach(change => {
             const row = document.createElement('tr');
             
             const dateCell = document.createElement('td');

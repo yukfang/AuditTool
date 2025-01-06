@@ -17,8 +17,8 @@ async function createChangeLogTask(advertiserId, campaign_id, adgroup_id){
     let param       = { }; 
     let body        = {
         advertiser_id: advertiserId,
-        start_time:  "2024-12-01 00:00:00",
-        end_time:  "2024-12-30 00:00:00",
+        start_time:  "2024-12-12 00:00:00",
+        end_time:  "2025-01-11 00:00:00",
         // module: "STATUS",
     }
     if(campaign_id !== null) {
