@@ -20,19 +20,32 @@ async function getChangeSummary(advertiserId, adgroupId) {
         throw error;
     }
 }
-async function fetchAdgroupData(advertiserId, adgroupId) {
-    return await fetchData('/open_api/v1.3/adgroup/get/', advertiserId, null, adgroupId);
-}
+
 async function fetchCampaignData(advertiserId, campaignId) {
+    console.log(`fetchCampaignData`)
     return await fetchData('/open_api/v1.3/campaign/get/', advertiserId, campaignId, null);
 }
 async function fetchSpcCampaignData(advertiserId, campaignId) {
+    console.log(`fetchSpcCampaignData`)
     return await fetchData('/open_api/v1.3/campaign/spc/get/', advertiserId, campaignId, null);
 }
+
+async function fetchAdgroupData(advertiserId, adgroupId) {
+    return await fetchData('/open_api/v1.3/adgroup/get/', advertiserId, null, adgroupId);
+}
+async function fetchAdgroupDataByCampaignId(advertiserId, campaignId) {
+    return await fetchData('/open_api/v1.3/adgroup/get/', advertiserId, campaignId, null);
+}
+
 async function getCreativeData(advertiserId, adgroupId) {
     console.log(`creative filter = ${adgroupId}`)
     return await fetchData('/open_api/v1.3/ad/get/', advertiserId, null,  adgroupId);
 }
+async function getCreativeDataByCampaignId(advertiserId, campaignId) {
+    console.log(`creative filter = ${campaignId}`)
+    return await fetchData('/open_api/v1.3/ad/get/', advertiserId, campaignId,  null);
+}
+
 
 
 async function fetchData(url, advertiserId, campaignId, adgroupId) { 

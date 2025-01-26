@@ -1,0 +1,126 @@
+const ffmpeg = require('fluent-ffmpeg');
+const { imageHash } = require('image-hash');
+const fs = require('fs');
+const path = require('path');
+const https = require('https');
+const http = require('http');
+
+const FRAME_INTERVAL = 0.1; // Extract a frame every 0.1 second
+const HASH_DIFFERENCE_THRESHOLD = 5; // Tolerance level for hash comparison
+
+// Download video from a URL
+function downloadVideo(url, outputPath) {
+    console.log('Downloading video from:', url);
+  return new Promise((resolve, reject) => {
+    const protocol = url.startsWith('https') ? https : http;
+    const file = fs.createWriteStream(outputPath);
+
+    protocol.get(url, (response) => {
+      if (response.statusCode !== 200) {
+        reject(new Error(`Failed to get video. Status code: ${response.statusCode}`));
+        return;
+      }
+
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close(() => resolve(outputPath));
+      });
+
+      file.on('error', (err) => {
+        fs.unlinkSync(outputPath);  // Clean up if error occurs
+        reject(new Error(`Error writing file: ${err.message}`));
+      });
+    }).on('error', (err) => {
+      fs.unlinkSync(outputPath);  // Clean up if error occurs
+      reject(new Error(`Error downloading video: ${err.message}`));
+    });
+  });
+}
+
+// Extract frames from a video
+function extractFrames(videoPath, outputDir, callback) {
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+
+  ffmpeg(videoPath)
+    .output(`${outputDir}/frame-%03d.jpg`)
+    .outputOptions([`-vf fps=1/${FRAME_INTERVAL}`]) // 1 frame every 0.1 seconds
+    .on('end', () => callback())
+    .on('error', (err) => console.error('Error extracting frames:', err))
+    .run();
+}
+
+// Generate perceptual hashes for all extracted frames
+function generateHashes(frameDir, callback) {
+  const hashes = [];
+  const files = fs.readdirSync(frameDir).filter(file => file.endsWith('.jpg'));
+
+  let processed = 0;
+  files.forEach((file) => {
+    imageHash(path.join(frameDir, file), 16, true, (error, data) => {
+      if (error) console.error('Hashing error:', error);
+      else hashes.push(data);
+
+      processed++;
+      if (processed === files.length) callback(hashes);
+    });
+  });
+}
+
+// Compare two hash arrays with tolerance
+function compareHashes(hashes1, hashes2) {
+    let matches = 0;
+    const matchedFrames = new Set();
+  
+    hashes1.forEach((hash1, index1) => {
+      hashes2.forEach((hash2, index2) => {
+        const diff = hammingDistance(hash1, hash2);
+        if (diff <= HASH_DIFFERENCE_THRESHOLD && !matchedFrames.has(index2)) {
+          matches++;
+          matchedFrames.add(index2); // Avoid matching the same frame again
+        }
+      });
+    });
+  
+    const similarity = (matches / Math.max(hashes1.length, hashes2.length)) * 100;
+    console.log(`Similarity: ${similarity.toFixed(2)}%`);
+  }
+  
+
+// Calculate Hamming Distance between two hashes
+function hammingDistance(hash1, hash2) {
+  let distance = 0;
+  for (let i = 0; i < hash1.length; i++) {
+    if (hash1[i] !== hash2[i]) distance++;
+  }
+  return distance;
+}
+
+// Main comparison process for video URLs
+function compareVideosFromUrls(url1, url2) {
+  const video1 = 'video1.mp4';
+  const video2 = 'video2.mp4';
+
+  // Download the videos
+  Promise.all([downloadVideo(url1, video1), downloadVideo(url2, video2)])
+    .then(() => {
+      extractFrames(video1, 'frames1', () => {
+        extractFrames(video2, 'frames2', () => {
+          generateHashes('frames1', (hashes1) => {
+            generateHashes('frames2', (hashes2) => {
+              compareHashes(hashes1, hashes2);
+            });
+          });
+        });
+      });
+    })
+    .catch((error) => {
+      console.error('Error during video download or processing:', error);
+    });
+}
+
+// Run comparison with URLs
+const videoUrl1 = 
+'https://v16m-default.akamaized.net/bad9f4e793bb1136c60f9d64ed2a0404/67866807/video/tos/alisg/tos-alisg-ve-0051c001-sg/os4l4xliOnIruKvzA2QEm0aihftCp5BoABMAwd/?a=0&bti=Nzg3NWYzLTQ6&ch=0&cr=0&dr=0&cd=0%7C0%7C0%7C0&cv=1&br=19596&bt=9798&cs=0&ds=4&ft=.cwOVInz7ThV6SYOXq8Zmo&mime_type=video_mp4&qs=0&rc=OjVkNDVmZWRnaTo7aTplN0BpM2VvOXI5cm13dzMzODYzNEAxX15gMi1jXmAxYy0uNDNiYSMzb2hvMmRzMmxgLS1kMC1zcw%3D%3D&vvpl=1&l=202501140734527263F2C10C0B1BFAEE18&btag=e000b0000'
+const videoUrl2 = videoUrl1
+
+compareVideosFromUrls(videoUrl1, videoUrl2);

@@ -76,10 +76,13 @@ router.get('/', (ctx, next) =>{
   ctx.body = fs.readFileSync('index.html', {encoding:'utf8', flag:'r'});
 })
 router.get('/engaged-session', (ctx, next) =>{
-  ctx.body = fs.readFileSync('engaged-session.html', {encoding:'utf8', flag:'r'});
+  ctx.body = fs.readFileSync('audit-engagement-session.html', {encoding:'utf8', flag:'r'});
 })
 router.get('/app', (ctx, next) =>{
-  ctx.body = fs.readFileSync('app.html', {encoding:'utf8', flag:'r'});
+  ctx.body = fs.readFileSync('audit-app-s+.html', {encoding:'utf8', flag:'r'});
+})
+router.get('/catalog-video', (ctx, next) =>{
+  ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});
 })
 router.get('/fetchdata.js', (ctx, next) =>{
   ctx.body = fs.readFileSync('fetchdata.js', {encoding:'utf8', flag:'r'});
