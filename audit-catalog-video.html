@@ -89,8 +89,9 @@
     function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
         const merged = { ...adgroupData };
         // Append Creative Data
-        merged['creativeData'] = creativeData
-        merged['creative_number'] = creativeData.length
+        merged['creativeData']      = creativeData
+        merged['adgroupData']       = adgroupData
+        merged['creative_number']   = creativeData.length
         merged['videos']            = [... new Set(creativeData.map(x => x.video_id))]
         merged['ad_text']           = [... new Set(creativeData.map(x => x.ad_text))]
         merged['landing_page_url']  = [... new Set(creativeData.map(x => x.landing_page_url))].sort()
@@ -104,41 +105,45 @@
 
 
 
-
         for (const key in campaignData) {
-          console.log(`key = ${key}`)
-            if (merged[key]) {
-                if([
-                    "location_ids",
-                    "excluded_audience_ids",
-                    "budget_mode",
-                    "secondary_status",
-                    "placements",
-                    "deep_bid_type",
-                ].indexOf(key) !== -1) {
-                    const valueSet = new Set([].concat(merged[key]).concat(campaignData[key]))
-                    valueSet.delete(null)
-                    merged[key] =  [...valueSet]    
-                } else if ("budget" === key) {
-                    console.log(`campaignData[key] = ${campaignData[key]}`)
-                    if(campaignData[key] !== 0) {
-                        // merged[key] = campaignData[key]
-                        merged['campaign_budget'] = campaignData[key]
-                        merged['adgroup_budget'] = merged[key]
+          if("landing_page_urls" == key){
+                  console.log(`xxx`)
+                  // merged[key] = 'L'
+                  merged["landing_page_urls"] = campaignData[key].map(x => x.landing_page_url)
+              }
+          else if(merged[key]) {
+              if([
+                  "location_ids",
+                  "excluded_audience_ids",
+                  "budget_mode",
+                  "secondary_status",
+                  "placements",
+                  "deep_bid_type",
+              ].indexOf(key) !== -1) {
+                  const valueSet = new Set([].concat(merged[key]).concat(campaignData[key]))
+                  valueSet.delete(null)
+                  merged[key] =  [...valueSet]    
+              } else if ("budget" === key) {
+                  console.log(`campaignData[key] = ${campaignData[key]}`)
+                  if(campaignData[key] !== 0) {
+                      // merged[key] = campaignData[key]
+                      merged['campaign_budget'] = campaignData[key]
+                      merged['adgroup_budget'] = merged[key]
 
-                    } else {
+                  } else {
 
-                    }
-                    // merged[key] = `Campaign Level: ${campaignData[key]}; Adgroup Level: ${merged[key]}`;
-                } 
-                else if (merged[key] === campaignData[key]) {
-                    merged[key] = campaignData[key];
-                } else {
-                    merged[key] = `${merged[key]}, ${campaignData[key]}`;
-                }
-            } else {
-                merged[key] = campaignData[key];
-            }
+                  }
+                  // merged[key] = `Campaign Level: ${campaignData[key]}; Adgroup Level: ${merged[key]}`;
+              } 
+
+              else if (merged[key] === campaignData[key]) {
+                  merged[key] = campaignData[key];
+              } else {
+                  merged[key] = `${merged[key]}, ${campaignData[key]}`;
+              }
+          } else {
+              merged[key] = campaignData[key];
+          }
         }
 
         return merged;
@@ -330,8 +335,11 @@
           "adgroup_name",
           "is_smart_performance_campaign",
           "promotion_type",
+          "pixel_id",
           "catalog_id",
           "product_source",
+          "product_specific_type",
+          "call_to_action_id",
           // "package",
         ],
         "Bidding": [
@@ -366,7 +374,8 @@
         ],
         "Creatives": [
           "creative_number",
-          "landing_page_url",
+          "landing_page_urls",
+          // "landing_page_url",
           "text_number",
           "video_number",
           "videos",
