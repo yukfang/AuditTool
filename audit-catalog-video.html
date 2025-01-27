@@ -28,7 +28,9 @@
     
       <!-- Second Line: Sample Data buttons -->
       <div class="button-row">
-        <button onclick="autoFillTestData('7294545180504358913', '1821953200829601', '1821953454274561')">YOUNGCO(聚合)</button>
+        <button onclick="autoFillTestData('7294545180504358913', '1821953454274561', '1821953200829601')">YOUNGCO(聚合)</button>
+        <button onclick="autoFillTestData('7218459440767483905', '1822043010036818', '1822042679117858')">TMZ</button>
+
       </div>
       
       <progress id="progressBar" value="0" max="100"></progress>
@@ -86,13 +88,13 @@
 
 
   <script>
-    function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
+    async function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
         const merged = { ...adgroupData };
         // Append Creative Data
         merged['creativeData']      = creativeData
         merged['adgroupData']       = adgroupData
         merged['creative_number']   = creativeData.length
-        merged['videos']            = [... new Set(creativeData.map(x => x.video_id))]
+        merged['videos']            = [... new Set(creativeData.map(x => x.ad_name.split('.')[0]))]
         merged['ad_text']           = [... new Set(creativeData.map(x => x.ad_text))]
         merged['landing_page_url']  = [... new Set(creativeData.map(x => x.landing_page_url))].sort()
 
@@ -103,14 +105,10 @@
         merged['changesummary'] = changeSummary.summary
         merged['changelog'] = changeSummary.records.map(x=>x.activityDetails)
 
-
-
         for (const key in campaignData) {
           if("landing_page_urls" == key){
-                  console.log(`xxx`)
-                  // merged[key] = 'L'
                   merged["landing_page_urls"] = campaignData[key].map(x => x.landing_page_url)
-              }
+          }
           else if(merged[key]) {
               if([
                   "location_ids",
@@ -146,6 +144,18 @@
           }
         }
 
+        /**  handle CM Video Logic */ 
+        {
+          // if the campaign is a Catalog Video campaign, then we need to fetch the video data from CM video
+          if(merged['catalog_id'].length === '7359085704204257041'.length) {
+              const videoList = await sendGetRequest(`./cm/videos/?catalog_id=${merged['catalog_id']}&bc_id=${merged['catalog_authorized_bc_id']}`)
+              // console.log(videoList)
+
+              merged['videos'] = videoList
+              merged['video_number'] = videoList.length
+          }
+        }
+
         return merged;
     }
 
@@ -177,7 +187,7 @@
         const changeSummary = {records:[]} || await getChangeSummary(advertiserId,  adgroupId)
         
         console.log(changeSummary)
-        return mergeData(campaignData, adgroupData, creativeData, changeSummary)
+        return await mergeData(campaignData, adgroupData, creativeData, changeSummary)
         // return {campaignData, adgroupData, creativeData}
     }
 
@@ -225,6 +235,34 @@
       const controlCampaign = await fetchAndMergeData(advertiserId, controlAdGroupId, progressBar);
       console.log(`progress = ${99}`)
       progressBar.value = 99; // Update progress bar to 50%
+
+
+      // Special logic for Catalog Video Validation: Catalog Video should contain all Web Conversion Videos
+      {
+        console.log(`Special logic for CM Video, controlCampaign video size = ${controlCampaign['videos'].length}, testCampaign video size = ${testCampaign['videos'].length}`)
+
+        let cmVideos = []
+        for(let i = 0; i < controlCampaign['videos'].length; i++) {
+          console.log(`controlCampaign['videos'][i] = ${controlCampaign['videos'][i]}`)
+          if(testCampaign['videos'].indexOf(controlCampaign['videos'][i]) === -1) {
+
+          } else {
+            console.log(`push video to cmVideos`)
+            cmVideos.push(controlCampaign['videos'][i])          
+          }
+        }
+        testCampaign['videos'] = cmVideos
+
+        // console.log(`found test`)
+        // console.log(controlCampaign['videos'])
+        // let found = (controlCampaign['videos'].indexOf('1216运动变色多焦点眼镜1') === -1) ? "Not Found" : "Found"
+        // console.log(`controlCampaign : found = ${found}`)
+
+        // let found2 = (testCampaign['videos'].indexOf(controlCampaign['videos'][1]) === -1) ? "Not Found" : "Found"
+        // console.log(`testCampaign : found = ${found2}`)
+
+        
+      }
 
 
       document.getElementById('header1').textContent = `Campaign ${testAdGroupId}`;
@@ -337,6 +375,7 @@
           "promotion_type",
           "pixel_id",
           "catalog_id",
+          "catalog_authorized_bc_id",
           "product_source",
           "product_specific_type",
           "call_to_action_id",
@@ -532,6 +571,24 @@
   }
 };
 
+</script>
+
+
+
+<script>
+async function sendGetRequest(url) {
+  try {
+    const response = await fetch(url); // Send the GET request
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`); // Handle HTTP errors
+    }
+    const data = await response.json(); // Parse the response body as JSON
+    return data; // Return the parsed data
+  } catch (error) {
+    console.error('Error fetching data:', error); // Log any errors
+    throw error; // Rethrow the error for further handling
+  }
+}
 </script>
 
 </body>

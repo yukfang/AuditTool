@@ -13,6 +13,7 @@ const adgroup_get      = require('./router/mapi/adgroup_get')
 const campaign_get     = require('./router/mapi/campaign_get')
 const campaign_spc_get = require('./router/mapi/campaign_spc_get')
 const change_summary_get = require('./router/mapi/changelog')
+const cm_video_get = require('./router/ttam/cm_get_videos')
 
 koaApp.use(koaStatic(path.join(__dirname, 'assets'))); // 本地
 
@@ -65,6 +66,14 @@ koaApp.use(async (ctx, next) => {
     const change_summary = await change_summary_get(advertiser_id, adgroup_id)
     console.log(`return change summary ${change_summary}`)
     ctx.body = change_summary
+  } else if(ctx.path === '/cm/videos/') {
+    // const url = ctx.request.url
+    const bc_id = ctx.request.query.bc_id
+    const catalog_id = ctx.request.query.catalog_id
+
+
+    const videoList = await cm_video_get(catalog_id, bc_id)
+    ctx.body = videoList
   } 
   else {
       // ctx.body = '' + ctx.path;
@@ -85,6 +94,9 @@ router.get('/catalog-video', (ctx, next) =>{
   ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});
 })
 router.get('/fetch_mapi.js', (ctx, next) =>{
+  ctx.body = fs.readFileSync('fetch_mapi.js', {encoding:'utf8', flag:'r'});
+})
+router.get('/fetch_cm_video.js', (ctx, next) =>{
   ctx.body = fs.readFileSync('fetch_mapi.js', {encoding:'utf8', flag:'r'});
 })
 router.get('/matrix', (ctx, next) =>{
