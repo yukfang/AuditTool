@@ -84,8 +84,8 @@ router.get('/app', (ctx, next) =>{
 router.get('/catalog-video', (ctx, next) =>{
   ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});
 })
-router.get('/fetchdata.js', (ctx, next) =>{
-  ctx.body = fs.readFileSync('fetchdata.js', {encoding:'utf8', flag:'r'});
+router.get('/fetch_mapi.js', (ctx, next) =>{
+  ctx.body = fs.readFileSync('fetch_mapi.js', {encoding:'utf8', flag:'r'});
 })
 router.get('/matrix', (ctx, next) =>{
   ctx.body = fs.readFileSync('matrix.html', {encoding:'utf8', flag:'r'});

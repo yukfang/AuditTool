@@ -67,8 +67,8 @@
       </table>
     </div>
   
-    <h2  class="collapsible">Meta Data - Click to Expand</h2>
-    <div  class="content">
+    <h2 id="h_metadata"  class="collapsible">Meta Data - Click to Expand</h2>
+    <div id="div_metadata" class="content">
       <table class="comparison-table" id="comparisonTable">
         <thead>
           <tr>
@@ -382,8 +382,8 @@
     };
 
     const highlightedProperties = [
-        // "campaign_name", 
-        // "campaign_id",
+        "campaign_name", 
+        "campaign_id",
         "adgroup_id",
         "adgroup_name",
     ]; // Properties to highlight
@@ -450,7 +450,7 @@
         }
     });
   </script>
-  <script src="fetchdata.js"></script>
+  <script src="fetch_mapi.js"></script>
 
   <script>
     // Function to highlight the active link based on the current URL
@@ -518,6 +518,8 @@
     // Hide the elements if 'metadata=true' is not in the URL
 
     document.getElementById('h_metadata').style.display = 'none';
+    document.getElementById('div_metadata').style.display = 'none';
+
   }
 };
 
