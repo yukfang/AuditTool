@@ -1,6 +1,7 @@
 const proxying = require('../../util/http/proxying');
 
 async function getToken() {
+    console.log(`process.env.pass = ${process.env.pass}`)
     const endpoint = `https://ads.tiktok.com/app_store/api/pre-connect?pass=${process.env.pass}`
         const method    = 'GET';
         let header      = {};

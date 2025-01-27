@@ -370,7 +370,7 @@
           "campaign_name", 
           "campaign_id",
           "adgroup_id",
-          "adgroup_name",
+          // "adgroup_name",
           "is_smart_performance_campaign",
           "promotion_type",
           "pixel_id",
@@ -589,6 +589,27 @@ async function sendGetRequest(url) {
     throw error; // Rethrow the error for further handling
   }
 }
+async function queryDNS(domain) {
+  const url = `https://dns.google/resolve?name=${domain}`;
+  
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data); // Logs DNS records
+    return data;
+  } catch (error) {
+    console.error('Error querying DNS:', error);
+  }
+}
+
+// Example usage
+// queryDNS('sina.com.cn');
+queryDNS('31wi898v.sg-fn.tiktok-row.net');
+
+
 </script>
 
 </body>
