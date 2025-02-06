@@ -52,10 +52,14 @@ async function  getCMVideoName(catalog_id, bc_id) {
     const response = (await proxying(method, endpoint, header, param, body, true));
     // console.log(response)
     if(response.status === 200) {
-        const videoList = JSON.parse(response.data).data.catalog_video_list.map(x => x.name)
+        const videoList = JSON.parse(response.data).data.catalog_video_list
         console.log(videoList)
-        return videoList
 
+        if(videoList !== null) {
+            return videoList.map(x => x.name)
+        } else {
+            return []
+        }
     } else {
         console.log(`Status not 200`)
     }

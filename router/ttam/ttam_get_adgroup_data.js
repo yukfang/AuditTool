@@ -89,6 +89,10 @@ async function  getTTAMMetric(adv_id, adgroup_id,st,et) {
 
 
 const TestClientsOld = [
+        /** Space NK */
+        { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822030320698417', ea: 'LPV',   cat: "CTRL",    st: '2025-01-25', et: '', weekly: [] },
+        { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822028739022865', ea: 'DLPV',  cat: "TEST",    st: '2025-01-25', et: '', weekly: [] },
+        
 
     /** Bank Now DE */
     { client_name: 'Bank Now DE', adv_id: '7091261576040284162', adgroup_id: '1821759151986786', ea: 'LPV',   cat: "CTRL",    st: '2025-01-20', et: '', weekly: [] },
@@ -171,12 +175,12 @@ const TestClients = [
 
 
     /** Space NK */
-    { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822030320698417', ea: 'LPV',   cat: "CTRL",    st: '2025-01-20', et: '', weekly: [] },
-    { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822028739022865', ea: 'DLPV',  cat: "TEST",    st: '2025-01-20', et: '', weekly: [] },
+    // { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822030320698417', ea: 'LPV',   cat: "CTRL",    st: '2025-01-25', et: '', weekly: [] },
+    // { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822028739022865', ea: 'DLPV',  cat: "TEST",    st: '2025-01-25', et: '', weekly: [] },
     
 
 ].concat(
-    // TestClientsOld
+    TestClientsOld
 
 )
   
