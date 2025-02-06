@@ -6,15 +6,15 @@
   <title>T & L - Campaign Audit Tool </title>
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/home.css">
-
 </head>
 <body>
     <!-- Header Section -->
     <header>
-        <a href="/" target="_self">Home</a>
-        <a href="engaged-session" target="_self">Engaged Session</a>
-        <a href="app" target="_self">App S+</a>
-        <a href="catalog-video" target="_self">Catalog Video</a>
+        <!-- <a href="/" target="_self">Home</a>
+        <a href="engaged-session"   target="_self">Engaged Session</a>
+        <a href="app"               target="_self">App S+</a>
+        <a href="catalog-video"     target="_self">Catalog Video</a>
+        <a href="s+traffic"         target="_self">S+ Traffic</a> -->
     </header>
     <br>
     <br>
@@ -22,10 +22,7 @@
     <div class="container">
         <div class="left">
             <section class="key-info">
-                <h2>App S+</h2>
-                <div class="info-item">
-                    <strong>HQ Test Doc:</strong> <span id="productName">doc link</span>
-                </div>
+                <h2>S+ App</h2>
                 <div class="info-item">
                     <strong>PMM POC:</strong> <span id="pmmName">Wan Ting / Rachel</span>
                 </div>
@@ -39,9 +36,6 @@
             <section class="key-info">
                 <h2>Engaged Session</h2>
                 <div class="info-item">
-                    <strong>HQ Test Doc:</strong> <span id="productName">doc link</span>
-                </div>
-                <div class="info-item">
                     <strong>PMM POC:</strong> <span id="pmmName">Elisabetta Zerbo</span>
                 </div>
                 <div class="info-item">
@@ -54,9 +48,6 @@
             <section class="key-info">
                 <h2> Catalog Video</h2>
                 <div class="info-item">
-                    <strong>HQ Test Doc:</strong> <span id="productName">doc link</span>
-                </div>
-                <div class="info-item">
                     <strong>PMM POC:</strong> <span id="pmmName">Kiefer Yoon</span>
                 </div>
                 <div class="info-item">
@@ -68,6 +59,19 @@
     
 
 
+    <div class="container">
+        <div class="left">
+            <section class="key-info">
+                <h2>S+ Traffic</h2>
+                <div class="info-item">
+                    <strong>PMM POC:</strong> <span id="pmmName">Qunying Ren</span>
+                </div>
+                <div class="info-item">
+                    <strong>TSC POC:</strong> <span id="tscName">Mahfuz Alam</span>
+                </div>
+            </section>
+        </div>
+    </div>
 
     <script>
         // Function to highlight the active link based on the current URL
@@ -96,5 +100,6 @@
         // Call the function to highlight the active link when the page loads
         document.addEventListener("DOMContentLoaded", highlightActiveLink);
       </script>
+      <script src="header_builder.js"></script>
 </body>
 </html>

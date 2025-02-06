@@ -90,9 +90,10 @@ router.get('/engaged-session', (ctx, next) =>{
 router.get('/app', (ctx, next) =>{
   ctx.body = fs.readFileSync('audit-app-s+.html', {encoding:'utf8', flag:'r'});
 })
-router.get('/catalog-video', (ctx, next) =>{
-  ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});
-})
+router.get('/catalog-video', (ctx, next) =>{ ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});})
+router.get('/s\\+traffic',     (ctx, next) =>{ ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});})
+
+
 router.get('/fetch_mapi.js', (ctx, next) =>{
   ctx.body = fs.readFileSync('fetch_mapi.js', {encoding:'utf8', flag:'r'});
 })
@@ -101,8 +102,8 @@ router.get('/fetch_cm_video.js', (ctx, next) =>{
 })
 router.get('/matrix', (ctx, next) =>{
   ctx.body = fs.readFileSync('matrix.html', {encoding:'utf8', flag:'r'});
-  // next();
 })
+router.get('/header_builder.js', (ctx, next) => {ctx.body = fs.readFileSync('header_builder.js', {encoding:'utf8', flag:'r'})})
 
 
 router.get('/css/style.css', (ctx, next) =>{
