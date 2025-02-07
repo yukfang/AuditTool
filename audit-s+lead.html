@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalog Video Audit Tool</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+    </header>
+    <br>
+    <br>
+
+    <div class="input-container">
+      <!-- First Line: Audit button and inputs -->
+      <div class="input-row">
+        <button onclick="audit()">Audit</button>
+        <input type="text"    id="advertiserId"     placeholder="Enter Advertiser ID">
+        <input type="number"  id="testAdGroupId"    placeholder="Enter Test Campaign ID">
+        <input type="number"  id="controlAdGroupId" placeholder="Enter Control Campaign ID">
+      </div>
+    
+      <!-- Second Line: Sample Data buttons -->
+      <div class="button-row">
+        <button onclick="autoFillTestData('6820377675731828741', '1823141725521954', '1823140734244930')">TEST</button>
+      </div>
+      
+      <progress id="progressBar" value="0" max="100"></progress>
+    </div>
+  
+    <h2 class="collapsible active">Audit Results - Click to Fold</h2>
+    <div class="content" style="display: block;">
+      <table class="audit-table" id="auditTable">
+        <thead>
+          <tr>
+            <th>Section</th>
+            <th>Property</th>
+            <th>Test Group Value</th>
+            <th>Control Group Value</th>
+          </tr>
+        </thead>
+        <tbody id="auditBody">
+          <!-- Audit results will be injected here -->
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="collapsible active">Changelog - Click to Expand</h2>
+    <div class="content" style="display: block;">
+      <table class="changelog-table" id="changelogTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Test Group Changes</th>
+            <th>Control Group Changes</th>
+          </tr>
+        </thead>
+        <tbody id="changelogBody">
+          <!-- Changelog results will be injected here -->
+        </tbody>
+      </table>
+    </div>
+  
+    <h2 id="h_metadata"  class="collapsible">Meta Data - Click to Expand</h2>
+    <div id="div_metadata" class="content">
+      <table class="comparison-table" id="comparisonTable">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Property</th>
+            <th id="header1">Test Group Campaign</th>
+            <th id="header2">Control Group Campaign</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Comparison results will be injected here -->
+        </tbody>
+      </table>
+    </div>
+
+
+  <script>
+    async function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
+        const merged = { ...adgroupData };
+        // Append Creative Data
+        merged['creativeData']      = creativeData
+        merged['adgroupData']       = adgroupData
+        merged['creative_number']   = creativeData.length
+        merged['videos']            = [... new Set(creativeData.map(x => x.video_id))]
+        console.log(`merged['videos'] = ${merged['videos']}`)
+        merged['ad_text']           = [... new Set(creativeData.map(x => x.ad_text))]
+
+        // merged['landing_page_url'] = extractInfo('landing_page_url', campaignData, adgroupData, creativeData)
+
+        if(campaignData["landing_page_urls"]) {
+          const LPdata = JSON.stringify(campaignData["landing_page_urls"])
+          console.log(`campaignData["landing_page_urls"] = ${LPdata}`)
+
+        }
+        merged['landing_page_url'] = []
+                                  .concat([... new Set(creativeData.map(x => x.landing_page_url))].sort())                            // Normal Campaign
+                                  .concat([... new Set(campaignData["landing_page_urls"]?.map(x => x.landing_page_url))].sort())           // S+ Campaign
+                                  .filter(element => element !== "")
+
+        merged['video_number'] = merged['videos'].length
+        merged['text_number']  = [... new Set(creativeData.map(x => x.ad_text))].length
+
+        merged['changesummary'] = changeSummary.summary
+        merged['changelog'] = changeSummary.records.map(x=>x.activityDetails)
+
+        for (const key in campaignData) {
+          if("landing_page_urls" == key){
+                  merged["landing_page_urls"] = campaignData[key].map(x => x.landing_page_url)
+          }
+          else if(merged[key]) {
+              if([
+                  "location_ids",
+                  "excluded_audience_ids",
+                  "budget_mode",
+                  "secondary_status",
+                  "placements",
+                  "deep_bid_type",
+              ].indexOf(key) !== -1) {
+                  const valueSet = new Set([].concat(merged[key]).concat(campaignData[key]))
+                  valueSet.delete(null)
+                  merged[key] =  [...valueSet]    
+              } else if ("budget" === key) {
+                  console.log(`campaignData[key] = ${campaignData[key]}`)
+                  if(campaignData[key] !== 0) {
+                      // merged[key] = campaignData[key]
+                      merged['campaign_budget'] = campaignData[key]
+                      merged['adgroup_budget'] = merged[key]
+
+                  } else {
+
+                  }
+                  // merged[key] = `Campaign Level: ${campaignData[key]}; Adgroup Level: ${merged[key]}`;
+              } 
+
+              else if (merged[key] === campaignData[key]) {
+                  merged[key] = campaignData[key];
+              } else {
+                  merged[key] = `${merged[key]}, ${campaignData[key]}`;
+              }
+          } else {
+              merged[key] = campaignData[key];
+          }
+        }
+
+        /**  handle CM Video Logic */ 
+        if(false)
+        {
+          // if the campaign is a Catalog Video campaign, then we need to fetch the video data from CM video
+          console.log(`merged['catalog_id'] = ${merged['catalog_id']}`)
+          if(merged['catalog_id'] != null && merged['catalog_id'].length === '7359085704204257041'.length) {
+              const videoList = await sendGetRequest(`./cm/videos/?catalog_id=${merged['catalog_id']}&bc_id=${merged['catalog_authorized_bc_id']}`)
+              // console.log(videoList)
+              if(videoList != null) {
+                merged['videos'] = videoList
+                merged['video_number'] = videoList.length
+              } else {
+                merged['videos'] = []
+                merged['video_number'] = 0
+              }
+
+          }
+        }
+
+        return merged;
+    }
+
+    async function fetchAndMergeData(advertiserId, campaignId, progressBar) {
+
+        // Fetch Campaign Data
+        let campaignData = await fetchCampaignData(advertiserId, campaignId)
+        console.log(campaignData)
+
+        // If it's a spc campaign, fetch spc campaign data
+        if(campaignData.is_smart_performance_campaign) {
+          campaignData = await fetchSpcCampaignData(advertiserId, campaignId)
+        }
+        progressBar.value += 10
+
+        // Fetch Adgroup Data
+        let adgroupData = await fetchAdgroupDataByCampaignId(advertiserId, campaignId)
+        // let adgroupData = {}
+
+        // Fetch Creative Data 
+        const creativeData =  await getCreativeDataByCampaignId(advertiserId,  campaignId);
+        // if (!isSpc) {
+        //     const media_info_list_normal = await getCreativeData(advertiserId, null, adgroupId);
+        //     campaignData = { ...campaignData, media_info_list_normal }; // Merge creative data into campaign data
+        // }
+        progressBar.value += 10
+
+        /* 4. Fetch Change Log*/
+        // console.log(`4. fetch changelog data : ${adgroupId} `)
+        const changeSummary = {records:[]} || await getChangeSummary(advertiserId,  adgroupId)
+        
+        console.log(changeSummary)
+        return await mergeData(campaignData, adgroupData, creativeData, changeSummary)
+        // return {campaignData, adgroupData, creativeData}
+    }
+
+    function normalizeValue(value) {
+    if (value === null || value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) {
+      return 'N/A';
+    }
+    if (Array.isArray(value)) {
+      return JSON.stringify(value.sort());
+    }
+    if (typeof value === 'object') {
+      return JSON.stringify(value);
+    }
+    return value.toString();
+  }
+
+  function compareValues(value1, value2) {
+    return normalizeValue(value1) === normalizeValue(value2) || (normalizeValue(value1) === 'N/A' && normalizeValue(value2) === 'N/A');
+  }
+
+  async function audit() {
+    document.getElementById('tableBody').innerHTML = ''; // Clear Meta Data table
+    document.getElementById('auditBody').innerHTML = ''; // Clear Audit Results table
+    document.getElementById('changelogBody').innerHTML = ''; // Clear ChangeLog Results table
+
+
+    const advertiserId = document.getElementById('advertiserId').value;
+    const testAdGroupId = document.getElementById('testAdGroupId').value;
+    const controlAdGroupId = document.getElementById('controlAdGroupId').value;
+
+    if (!advertiserId || !testAdGroupId || !controlAdGroupId) {
+      alert("Please enter all required fields.");
+      return;
+    }
+
+    // Initialize progress bar
+    const progressBar = document.getElementById('progressBar');
+    progressBar.value = 0;
+
+    try {
+      const testCampaign = await fetchAndMergeData(advertiserId, testAdGroupId, progressBar);
+      console.log(`progress = ${50}`)
+      progressBar.value = 50; // Update progress bar to 25%
+
+      const controlCampaign = await fetchAndMergeData(advertiserId, controlAdGroupId, progressBar);
+      console.log(`progress = ${99}`)
+      progressBar.value = 99; // Update progress bar to 50%
+
+      document.getElementById('header1').textContent = `Campaign ${testAdGroupId}`;
+      document.getElementById('header2').textContent = `Campaign ${controlAdGroupId}`;
+
+
+      updateTable([testCampaign, controlCampaign]);
+      updateAuditTable([testCampaign, controlCampaign]);
+
+      const changeLogs = extractChangelog(testCampaign.changelog, controlCampaign.changelog);
+      console.log(changeLogs);
+      updateChangelogTable(changeLogs);
+      progressBar.value = 100; // Update progress bar to 100%
+
+    } catch (error) {
+      console.error("Error comparing campaigns:", error);
+    }
+  }
+
+  function extractChangelog(testCampaign, controlCampaign) {
+    const testChanges = testCampaign.map(record => ({
+        date: record.substring(0, 10),
+        testGroupChanges: record.substring(18, record.length),
+        controlGroupChanges: ''
+    }));
+
+    const controlChanges = controlCampaign.map(record => ({
+      date: record.substring(0, 10),
+      testGroupChanges: '',
+        controlGroupChanges: record.substring(18, record.length),
+    }));
+
+    const changesMap = new Map();
+
+    testChanges.forEach(change => {
+        if (!changesMap.has(change.date)) {
+            changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
+        }
+        changesMap.get(change.date).testGroupChanges += change.testGroupChanges + '\r\n';
+    });
+
+    controlChanges.forEach(change => {
+        if (!changesMap.has(change.date)) {
+            changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
+        }
+        changesMap.get(change.date).controlGroupChanges += change.controlGroupChanges + '\r\n';
+    });
+
+    const combinedChanges = Array.from(changesMap.values());
+    combinedChanges.sort((b, a) => new Date(a.date) - new Date(b.date));
+
+    return combinedChanges;
+  }
+
+    function updateTable(campaigns) {
+      const properties = new Set();
+      const differences = [];
+
+      campaigns.forEach(campaign => {
+        Object.keys(campaign).forEach(prop => properties.add(prop));
+      });
+
+      properties.forEach(property => {
+        const values = campaigns.map(campaign => normalizeValue(campaign[property]));
+
+        if (values[0] !== values[1]) {
+          differences.push({ property, values });
+        }
+      });
+
+      const sortedProperties = [...differences.map(d => d.property), ...[...properties].filter(p => !differences.some(d => d.property === p))];
+
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '';
+
+      sortedProperties.forEach(property => {
+        const row = document.createElement('tr');
+        const categoryCell = document.createElement('td');
+        categoryCell.textContent = "Meta Data";
+        row.appendChild(categoryCell);
+
+        const propertyCell = document.createElement('td');
+        propertyCell.textContent = property;
+        row.appendChild(propertyCell);
+
+        const values = campaigns.map(campaign => normalizeValue(campaign[property]));
+
+        values.forEach((value, index) => {
+          const valueCell = document.createElement('td');
+          valueCell.textContent = value;
+
+          if (values[0] !== values[1]) {
+            valueCell.style.backgroundColor = '#ffcccc';
+          }
+
+          row.appendChild(valueCell);
+        });
+
+        tableBody.appendChild(row);
+      });
+    }
+    function updateAuditTable(campaigns) {
+      const auditSections = {
+        "Campaign Basic Information": [
+          "campaign_name", 
+          "campaign_id",
+          "adgroup_id",
+          // "adgroup_name",
+          "is_smart_performance_campaign",
+          "promotion_type",
+          "pixel_id",
+          "catalog_id",
+          "catalog_authorized_bc_id",
+          "product_source",
+          "product_specific_type",
+          "call_to_action_id",
+          // "package",
+        ],
+        "Bidding": [
+          "budget",
+          "budget_mode",
+          // "campaign_budget",
+          // "adgroup_budget",
+          "billing_event",
+          "objective_type",
+          "bid_type",
+          "deep_bid_type",
+          "conversion_bid_price",
+          "deep_cpa_bid",
+          // "app_promotion_type",
+          "optimization_event",
+          "optimization_goal",
+        ],
+        "Targeting": [
+          "placements",
+          "age_groups",
+          "location_ids",
+          "excluded_custom_actions",
+          "included_custom_actions",
+          "excluded_audience_ids",
+        ],
+        "Attribution": [
+          "click_attribution_window",
+          "view_attribution_window",
+          "engaged_view_attribution_window",
+          "attribution_event_count",
+          "vbo_window",
+        ],
+        "Creatives": [
+          "creative_number",
+          // "landing_page_urls",
+          "landing_page_url",
+          "text_number",
+          "video_number",
+          "videos",
+          "ad_text",
+        ],
+        "Change Summary" : [
+          // "changelog",
+          "changesummary"
+        ],
+        "Other": [
+
+        ]
+    };
+
+    const highlightedProperties = [
+        "campaign_name", 
+        "campaign_id",
+        "adgroup_id",
+        "adgroup_name",
+    ]; // Properties to highlight
+    const auditBody = document.getElementById('auditBody');
+    auditBody.innerHTML = '';
+
+    Object.keys(auditSections).forEach(section => {
+      let sectionRowCount = auditSections[section].length; // Count how many rows will be in this section
+
+      auditSections[section].forEach((property, index) => {
+        const values = campaigns.map(campaign => normalizeValue(campaign[property]));
+        const row = document.createElement('tr');
+
+        if (index === 0) { // Only add section cell on first property of each section
+          const sectionCell = document.createElement('td');
+          sectionCell.textContent = section;
+          sectionCell.rowSpan = sectionRowCount; // Merge cells vertically
+          row.appendChild(sectionCell);
+        }
+
+        const propertyCell = document.createElement('td');
+        propertyCell.textContent = property;
+        row.appendChild(propertyCell);
+
+        values.forEach(value => {
+          const valueCell = document.createElement('td');
+          valueCell.textContent = value;
+          // Highlight differences
+          if (values[0] !== values[1]) {
+            valueCell.style.backgroundColor = '#ffcccc'; // Use any color you prefer
+          }
+          // Apply yellow background to specific properties
+          if (highlightedProperties.includes(property)) {
+            valueCell.style.backgroundColor = 'lightyellow';
+          }
+          row.appendChild(valueCell);
+        });
+
+        auditBody.appendChild(row);
+      });
+    });
+  }
+
+    function autoFillTestData(advertiserId, testAdGroupId, controlAdGroupId) {
+      document.getElementById('advertiserId').value = advertiserId;
+      document.getElementById('testAdGroupId').value = testAdGroupId;
+      document.getElementById('controlAdGroupId').value = controlAdGroupId;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var coll = document.getElementsByClassName("collapsible");
+        for (var i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+            content.style.display = "none";
+            this.textContent = this.textContent.replace("Fold", "Expand");
+            } else {
+            content.style.display = "block";
+            this.textContent = this.textContent.replace("Expand", "Fold");
+            }
+        });
+        }
+    });
+  </script>
+  <script src="fetch_mapi.js"></script>
+
+  <script>
+    // Function to highlight the active link based on the current URL
+    function highlightActiveLink() {
+      // Get the current page URL
+      const currentPage = window.location.pathname;
+  
+      // Get all the header links
+      const links = document.querySelectorAll('header a');
+  
+      // Loop through all links and add/remove the 'active' class
+      links.forEach(link => {
+        // Reset active state
+        link.classList.remove('active');
+  
+        // Special case for the "Home" link ("/")
+        if(currentPage === '/' && link.getAttribute('href') === '/') {
+          link.classList.add('active');
+        }  
+        if(currentPage.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/') {
+          link.classList.add('active'); // Add 'active' class to the matching link
+        }
+      });
+    }
+  
+    // Call the function to highlight the active link when the page loads
+    document.addEventListener("DOMContentLoaded", highlightActiveLink);
+  </script>
+  
+  <script>
+    function updateChangelogTable(changeLog) {
+        const changelogBody = document.getElementById('changelogBody');
+        changelogBody.innerHTML = '';
+
+        changeLog.forEach(change => {
+            const row = document.createElement('tr');
+            
+            const dateCell = document.createElement('td');
+            dateCell.textContent = change.date;
+            row.appendChild(dateCell);
+            
+            const testGroupCell = document.createElement('td');
+            testGroupCell.innerHTML = change.testGroupChanges.trim().replace(/\r\n/g, '<br>');
+            row.appendChild(testGroupCell);
+            
+            const controlGroupCell = document.createElement('td');
+            controlGroupCell.innerHTML = change.controlGroupChanges.trim().replace(/\r\n/g, '<br>');
+            row.appendChild(controlGroupCell);
+            
+            changelogBody.appendChild(row);
+        });
+    }
+</script>
+
+<script>
+  window.onload = function() {
+  // Function to get URL parameter value
+  function getURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // Check if the 'metadata' parameter is 'true'
+  if (getURLParameter('metadata') !== 'true') {
+    // Hide the elements if 'metadata=true' is not in the URL
+
+    document.getElementById('h_metadata').style.display = 'none';
+    document.getElementById('div_metadata').style.display = 'none';
+
+  }
+};
+
+</script>
+
+
+
+<script>
+async function sendGetRequest(url) {
+  try {
+    const response = await fetch(url); // Send the GET request
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`); // Handle HTTP errors
+    }
+    const data = await response.json(); // Parse the response body as JSON
+    return data; // Return the parsed data
+  } catch (error) {
+    console.error('Error fetching data:', error); // Log any errors
+    throw error; // Rethrow the error for further handling
+  }
+}
+async function queryDNS(domain) {
+  const url = `https://dns.google/resolve?name=${domain}`;
+  
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data); // Logs DNS records
+    return data;
+  } catch (error) {
+    console.error('Error querying DNS:', error);
+  }
+}
+
+</script>
+<script src="header_builder.js"></script>
+<script src="extract_info.js"></script>
+
+
+</body>
+</html>
