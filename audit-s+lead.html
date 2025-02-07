@@ -24,7 +24,7 @@
     
       <!-- Second Line: Sample Data buttons -->
       <div class="button-row">
-        <button onclick="autoFillTestData('6820377675731828741', '1823141725521954', '1823140734244930')">TEST</button>
+        <button onclick="autoFillTestData('7431619148209717265', '1817702434525186', '1817702434525186')">TEST</button>
       </div>
       
       <progress id="progressBar" value="0" max="100"></progress>
@@ -100,7 +100,7 @@
 
         }
         merged['landing_page_url'] = []
-                                  .concat([... new Set(creativeData.map(x => x.landing_page_url))].sort())                            // Normal Campaign
+                                  .concat([... new Set(creativeData.map(x => x.landing_page_url))].sort())                                 // Normal Campaign
                                   .concat([... new Set(campaignData["landing_page_urls"]?.map(x => x.landing_page_url))].sort())           // S+ Campaign
                                   .filter(element => element !== "")
 
