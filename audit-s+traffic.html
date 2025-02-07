@@ -17,18 +17,14 @@
       <!-- First Line: Audit button and inputs -->
       <div class="input-row">
         <button onclick="audit()">Audit</button>
-        <input type="text" id="advertiserId" placeholder="Enter Advertiser ID">
-        <input type="number" id="testAdGroupId" placeholder="Enter Test Ad Group ID">
-        <input type="number" id="controlAdGroupId" placeholder="Enter Control Ad Group ID">
+        <input type="text"    id="advertiserId"     placeholder="Enter Advertiser ID">
+        <input type="number"  id="testAdGroupId"    placeholder="Enter Test Campaign ID">
+        <input type="number"  id="controlAdGroupId" placeholder="Enter Control Campaign ID">
       </div>
     
       <!-- Second Line: Sample Data buttons -->
       <div class="button-row">
-        <button onclick="autoFillTestData('7294545180504358913', '1821953454274561', '1821953200829601')">YOUNGCO(聚合)</button>
-        <button onclick="autoFillTestData('7218459440767483905', '1822043010036818', '1822042679117858')">TMZ</button>
         <button onclick="autoFillTestData('6820377675731828741', '1823141725521954', '1823140734244930')">TEST</button>
-
-
       </div>
       
       <progress id="progressBar" value="0" max="100"></progress>
@@ -92,10 +88,21 @@
         merged['creativeData']      = creativeData
         merged['adgroupData']       = adgroupData
         merged['creative_number']   = creativeData.length
-        merged['videos']            = [... new Set(creativeData.map(x => x.ad_name.split('.')[0]))]
+        merged['videos']            = [... new Set(creativeData.map(x => x.video_id))]
+        console.log(`merged['videos'] = ${merged['videos']}`)
         merged['ad_text']           = [... new Set(creativeData.map(x => x.ad_text))]
-        merged['landing_page_url']  = [... new Set(creativeData.map(x => x.landing_page_url))].sort()
 
+        // merged['landing_page_url'] = extractInfo('landing_page_url', campaignData, adgroupData, creativeData)
+
+        if(campaignData["landing_page_urls"]) {
+          const LPdata = JSON.stringify(campaignData["landing_page_urls"])
+          console.log(`campaignData["landing_page_urls"] = ${LPdata}`)
+
+        }
+        merged['landing_page_url'] = []
+                                  .concat([... new Set(creativeData.map(x => x.landing_page_url))].sort())                            // Normal Campaign
+                                  .concat([... new Set(campaignData["landing_page_urls"]?.map(x => x.landing_page_url))].sort())           // S+ Campaign
+                                  .filter(element => element !== "")
 
         merged['video_number'] = merged['videos'].length
         merged['text_number']  = [... new Set(creativeData.map(x => x.ad_text))].length
@@ -143,14 +150,21 @@
         }
 
         /**  handle CM Video Logic */ 
+        if(false)
         {
           // if the campaign is a Catalog Video campaign, then we need to fetch the video data from CM video
-          if(merged['catalog_id'].length === '7359085704204257041'.length) {
+          console.log(`merged['catalog_id'] = ${merged['catalog_id']}`)
+          if(merged['catalog_id'] != null && merged['catalog_id'].length === '7359085704204257041'.length) {
               const videoList = await sendGetRequest(`./cm/videos/?catalog_id=${merged['catalog_id']}&bc_id=${merged['catalog_authorized_bc_id']}`)
               // console.log(videoList)
+              if(videoList != null) {
+                merged['videos'] = videoList
+                merged['video_number'] = videoList.length
+              } else {
+                merged['videos'] = []
+                merged['video_number'] = 0
+              }
 
-              merged['videos'] = videoList
-              merged['video_number'] = videoList.length
           }
         }
 
@@ -171,6 +185,7 @@
 
         // Fetch Adgroup Data
         let adgroupData = await fetchAdgroupDataByCampaignId(advertiserId, campaignId)
+        // let adgroupData = {}
 
         // Fetch Creative Data 
         const creativeData =  await getCreativeDataByCampaignId(advertiserId,  campaignId);
@@ -233,35 +248,6 @@
       const controlCampaign = await fetchAndMergeData(advertiserId, controlAdGroupId, progressBar);
       console.log(`progress = ${99}`)
       progressBar.value = 99; // Update progress bar to 50%
-
-
-      // Special logic for Catalog Video Validation: Catalog Video should contain all Web Conversion Videos
-      {
-        console.log(`Special logic for CM Video, controlCampaign video size = ${controlCampaign['videos'].length}, testCampaign video size = ${testCampaign['videos'].length}`)
-
-        let cmVideos = []
-        for(let i = 0; i < controlCampaign['videos'].length; i++) {
-          console.log(`controlCampaign['videos'][i] = ${controlCampaign['videos'][i]}`)
-          if(testCampaign['videos'].indexOf(controlCampaign['videos'][i]) === -1) {
-
-          } else {
-            console.log(`push video to cmVideos`)
-            cmVideos.push(controlCampaign['videos'][i])          
-          }
-        }
-        testCampaign['videos'] = cmVideos
-
-        // console.log(`found test`)
-        // console.log(controlCampaign['videos'])
-        // let found = (controlCampaign['videos'].indexOf('1216运动变色多焦点眼镜1') === -1) ? "Not Found" : "Found"
-        // console.log(`controlCampaign : found = ${found}`)
-
-        // let found2 = (testCampaign['videos'].indexOf(controlCampaign['videos'][1]) === -1) ? "Not Found" : "Found"
-        // console.log(`testCampaign : found = ${found2}`)
-
-        
-      }
-
 
       document.getElementById('header1').textContent = `Campaign ${testAdGroupId}`;
       document.getElementById('header2').textContent = `Campaign ${controlAdGroupId}`;
@@ -411,8 +397,8 @@
         ],
         "Creatives": [
           "creative_number",
-          "landing_page_urls",
-          // "landing_page_url",
+          // "landing_page_urls",
+          "landing_page_url",
           "text_number",
           "video_number",
           "videos",
@@ -603,13 +589,10 @@ async function queryDNS(domain) {
   }
 }
 
-// Example usage
-// queryDNS('sina.com.cn');
-queryDNS('31wi898v.sg-fn.tiktok-row.net');
-
-
 </script>
 <script src="header_builder.js"></script>
+<script src="extract_info.js"></script>
+
 
 </body>
 </html>

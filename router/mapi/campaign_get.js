@@ -25,7 +25,7 @@ async function mapi_campaign_get(advertiser_id, filtering){
         // console.log(data)
         const campaign_data = data.list[0]
 
-        console.log(campaign_data)
+        // console.log(campaign_data)
         return campaign_data
         return  {
             campaign_name                   : campaign_data.campaign_name,

@@ -90,8 +90,8 @@ router.get('/engaged-session', (ctx, next) =>{
 router.get('/app', (ctx, next) =>{
   ctx.body = fs.readFileSync('audit-app-s+.html', {encoding:'utf8', flag:'r'});
 })
-router.get('/catalog-video', (ctx, next) =>{ ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});})
-router.get('/s\\+traffic',     (ctx, next) =>{ ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});})
+router.get('/catalog-video',   (ctx, next) =>{ ctx.body = fs.readFileSync('audit-catalog-video.html', {encoding:'utf8', flag:'r'});})
+router.get('/s\\+traffic',     (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+traffic.html',          {encoding:'utf8', flag:'r'});})
 
 
 router.get('/fetch_mapi.js', (ctx, next) =>{
