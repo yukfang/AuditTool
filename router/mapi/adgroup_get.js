@@ -1,8 +1,6 @@
 const proxying = require('../../util/http/proxying');
 const token = require('./token')
 
-
-
 module.exports = 
 async function mapi_adgroup_get(advertiser_id, filtering){
     console.log(`${arguments.callee.name} advertiser_id = ${advertiser_id}, filtering = ${JSON.stringify(filtering)}`)

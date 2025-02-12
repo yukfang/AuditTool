@@ -1,4 +1,5 @@
 const proxying = require('../../util/http/proxying');
+const getAdGroupData = require('../mapi/adgroup_get');
 const { Parser } = require("json2csv");
 const fs = require("fs");
 const delayms = (ms) => {
@@ -89,113 +90,54 @@ async function  getTTAMMetric(adv_id, adgroup_id,st,et) {
 }
 
 
-const TestClientsOld = [
-
-    /** Abu Dhabi Tourism  */
-    { client_name: 'Abu Dhabi Tourism', adv_id: '6980965660721430529', adgroup_id: '1822504153289745', ea: 'LPV',   cat: "CTRL",    st: '2025-01-25', et: '', weekly: [] },
-    { client_name: 'Abu Dhabi Tourism', adv_id: '6980965660721430529', adgroup_id: '1822134268452881', ea: 'DLPV',  cat: "TEST",    st: '2025-01-25', et: '', weekly: [] },
-   
-        /** Space NK */
-        { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822030320698417', ea: 'LPV',   cat: "CTRL",    st: '2025-01-25', et: '', weekly: [] },
-        { client_name: 'Space NK ', adv_id: '6904684416950337537', adgroup_id: '1822028739022865', ea: 'DLPV',  cat: "TEST",    st: '2025-01-25', et: '', weekly: [] },
-        
-    /** Bank Now DE */
-    { client_name: 'Bank Now DE', adv_id: '7091261576040284162', adgroup_id: '1821759151986786', ea: 'LPV',   cat: "CTRL",    st: '2025-01-20', et: '', weekly: [] },
-    { client_name: 'Bank Now DE', adv_id: '7091261576040284162', adgroup_id: '1821759159832593', ea: 'DLPV',  cat: "TEST",    st: '2025-01-20', et: '', weekly: [] },
-    /** Bank Now FR */
-    { client_name: 'Bank Now FR', adv_id: '7091261576040284162', adgroup_id: '1821759148588193', ea: 'LPV',   cat: "CTRL",    st: '2025-01-20', et: '', weekly: [] },
-    { client_name: 'Bank Now FR', adv_id: '7091261576040284162', adgroup_id: '1821759156574386', ea: 'DLPV',  cat: "TEST",    st: '2025-01-20', et: '', weekly: [] },
-    /** Bank Now EN */
-    { client_name: 'Bank Now EN', adv_id: '7091261576040284162', adgroup_id: '1821759147486353', ea: 'LPV',   cat: "CTRL",    st: '2025-01-20', et: '', weekly: [] },
-    { client_name: 'Bank Now EN', adv_id: '7091261576040284162', adgroup_id: '1821759153814562', ea: 'DLPV',  cat: "TEST",    st: '2025-01-20', et: '', weekly: [] },
-    /** Bank Now IT */
-    { client_name: 'Bank Now IT', adv_id: '7091261576040284162', adgroup_id: '1821759147908098', ea: 'LPV',   cat: "CTRL",    st: '2025-01-20', et: '', weekly: [] },
-    { client_name: 'Bank Now IT', adv_id: '7091261576040284162', adgroup_id: '1821759155687586', ea: 'DLPV',  cat: "TEST",    st: '2025-01-20', et: '', weekly: [] },
-        
-
-    /** Stradivarius */
-    { client_name: 'Stradivarius', adv_id: '6878974709950578690', adgroup_id: '1821490067478530', ea: 'LPV',   cat: "CTRL",    st: '2025-01-17', et: '', weekly: [] },
-    { client_name: 'Stradivarius', adv_id: '6878974709950578690', adgroup_id: '1821490066491473', ea: 'DLPV',  cat: "TEST",    st: '2025-01-17', et: '', weekly: [] },
-
-    /** Mango */
-    { client_name: 'Mango', adv_id: '6930939843581083650', adgroup_id: '1821239756379217', ea: 'DLPV',  cat: "TEST",    st: '2025-01-17', et: '', weekly: [] },
-    { client_name: 'Mango', adv_id: '6930939843581083650', adgroup_id: '1821239762328594', ea: 'LPV',   cat: "CTRL",    st: '2025-01-17', et: '', weekly: [] },
-
-        /** COTY UK */
-        { client_name: 'COTY UK', adv_id: '6935480705417822209', adgroup_id: '1819325195298866',   ea: 'LPV',   cat: "CTRL",   st: '2025-01-09', et: '', weekly: [] },
-        { client_name: 'COTY UK', adv_id: '6935480705417822209', adgroup_id: '1819326282908674',   ea: 'DLPV',  cat: "TEST",    st: '2025-01-09', et: '', weekly: [] },
-    
-        /** Quick Book */
-        { client_name: 'QuickBooks', adv_id: '6956359251715457025', adgroup_id: '1821186196640817', ea: 'DLPV', cat: "TEST", st: '2025-01-14', et: '', weekly: [] },
-        { client_name: 'QuickBooks', adv_id: '6956359251715457025', adgroup_id: '1821187834652689', ea: 'DLPV', cat: "TEST", st: '2025-01-14', et: '', weekly: [] },
-        { client_name: 'QuickBooks', adv_id: '6956359251715457025', adgroup_id: '1821187899689042', ea: 'LPV',  cat: "CTRL", st: '2025-01-14', et: '',  },
-        { client_name: 'QuickBooks', adv_id: '6956359251715457025', adgroup_id: '1821187071609969', ea: 'LPV',  cat: "CTRL", st: '2025-01-14', et: '',  },
-
-
-        /** Adobe UK */
-        { client_name: 'Adobe UK', adv_id: '7328337344443580417', adgroup_id: '1819231248089122', ea: 'DLPV', cat: "TEST", st: '2025-01-08', et: '', weekly: [] },
-        { client_name: 'Adobe UK', adv_id: '7328337344443580417', adgroup_id: '1819228412523617', ea: 'LPV',  cat: "CTRL", st: '2025-01-08', et: '',  },
-
-        /** Adobe FR */
-        { client_name: 'Adobe FR', adv_id: '7328337344443580417', adgroup_id: '1820494392935426', ea: 'DLPV', cat: "TEST", st: '2025-01-08', et: '', weekly: [] },
-        { client_name: 'Adobe FR', adv_id: '7328337344443580417', adgroup_id: '1819242922347634', ea: 'LPV',  cat: "CTRL", st: '2025-01-08', et: '',  },
-
-        /** Decathlon */
-        { client_name: 'Decathlon', adv_id: '7005485886380998658', adgroup_id: '1820237368248337', ea: 'DLPV', cat: "TEST", st: '2025-01-08', et: '', weekly: [] },
-        { client_name: 'Decathlon', adv_id: '7005485886380998658', adgroup_id: '1820579856738337', ea: 'LPV',  cat: "CTRL", st: '2025-01-08', et: '',  },
-
-        /** Leroy */
-        { client_name: 'Leroy', adv_id: '7030739817839247361', adgroup_id: '1820221105118258', ea: 'DLPV', cat: "TEST", st: '2025-01-08', et: '', weekly: [] },
-        { client_name: 'Leroy', adv_id: '7030739817839247361', adgroup_id: '1820222726932482', ea: 'LPV',  cat: "CTRL", st: '2025-01-08', et: '',  },
-
-        /** Peugeot */
-        { client_name: 'Peugeot', adv_id: '7325100941009731586', adgroup_id: '1817623149104178', ea: 'DLPV', cat: "TEST", st: '2024-12-09', et: '2024-12-16', weekly: [] },
-        { client_name: 'Peugeot', adv_id: '7325100941009731586', adgroup_id: '1817623143443474', ea: 'LPV',  cat: "CTRL", st: '2024-12-09', et: '2024-12-16',  },
-    
-        /** Coach */
-        { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1818349487376386', ea: 'DLPV', cat: "TEST", st: '2024-12-24', et: '2025-01-08', weekly: [] },
-        { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1818349493967922', ea: 'LPV',  cat: "CTRL", st: '2024-12-24', et: '2025-01-08',  },
-        // { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1811190214477842', ea: 'CP',   cat: "OTH", st: '2024-12-24', et: '',  },
-        // { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1802117164654609', ea: 'CP',   cat: "OTH", st: '2024-12-24', et: '',  },
-    
-        // { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1802117245168738', ea: 'CP',   cat: "OTH", st: '2024-12-24', et: '',  },
-        // { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1802117339971634', ea: 'CP',   cat: "OTH", st: '2024-12-24', et: '',  },
-        // { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1819333768035330', ea: 'CP',   cat: "OTH", st: '2024-12-24', et: '',  },
-        // { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1819272506510385', ea: 'CP',   cat: "OTH", st: '2024-12-24', et: '',  },
-        // { client_name: 'Coach', adv_id: '6927760983595155458', adgroup_id: '1816361511788545', ea: 'CP',   cat: "OTH", st: '2024-12-24', et: '',  },
-    
-    
-        /** Emirates (METAP) */
-        { client_name: 'Emirates', adv_id: '6994390460831678466', adgroup_id: '1818757165281361', ea: 'DLPV',  cat: "OTH",   st: '2024-12-30', et: '', weekly: [] },
-        { client_name: 'Emirates', adv_id: '6994390460831678466', adgroup_id: '1818757169762401', ea: 'DLPV',  cat: "OTH",   st: '2024-12-30', et: '', weekly: [] },
-        { client_name: 'Emirates', adv_id: '6994390460831678466', adgroup_id: '1818758613361713', ea: 'DLPV',  cat: "OTH",   st: '2024-12-30', et: '', weekly: [] },
-        { client_name: 'Emirates', adv_id: '6994390460831678466', adgroup_id: '1818758610491394', ea: 'DLPV',  cat: "OTH",   st: '2024-12-30', et: '', weekly: [] },
-      
-        { client_name: 'Emirates', adv_id: '7034388030886658049', adgroup_id: '1818861731240017', ea: 'LPV',   cat: "CTRL",    st: '2025-01-06', et: '', weekly: [] },
-        { client_name: 'Emirates', adv_id: '7034388030886658049', adgroup_id: '1818862326984817', ea: 'DLPV',  cat: "TEST",    st: '2025-01-06', et: '', weekly: [] },
-        { client_name: 'Emirates', adv_id: '7034388030886658049', adgroup_id: '1818862229900289', ea: 'DLPV',  cat: "TEST",    st: '2025-01-06', et: '', weekly: [] },
-        { client_name: 'Emirates', adv_id: '7034388030886658049', adgroup_id: '1818862146795601', ea: 'DLPV',  cat: "TEST",    st: '2025-01-06', et: '', weekly: [] },
-]
 const TestClients = [
 
-    /** Kate Somerville */
-    { client_name: 'Kate Somerville', adv_id: '6972294261718925314', adgroup_id: '1816912115379313', ea: 'LPV',   cat: "CTRL",    st: '2024-12-04', et: '2025-01-02', weekly: [] },
-    { client_name: 'Kate Somerville', adv_id: '6972294261718925314', adgroup_id: '1816914309103649', ea: 'LPV',   cat: "CTRL",    st: '2024-12-04', et: '2025-01-02', weekly: [] },
-    { client_name: 'Kate Somerville', adv_id: '6972294261718925314', adgroup_id: '1816913147955249', ea: 'DLPV',  cat: "TEST",    st: '2024-12-04', et: '2025-01-02', weekly: [] },
-    { client_name: 'Kate Somerville', adv_id: '6972294261718925314', adgroup_id: '1816914687288354', ea: 'DLPV',  cat: "TEST",    st: '2024-12-04', et: '2025-01-02', weekly: [] },
+/** Ebay */ 
+{ client_name: 'Ebay', adv_id: '7140346782873075713', adgroup_id: '1817462395527201', ea: 'LPV',        cat: "TEST",    st: '2024-12-01', et: '2024-12-31', location_ids:[], os:[] },
+{ client_name: 'Ebay', adv_id: '7140346782873075713', adgroup_id: '1817462391068674', ea: 'Clicks',     cat: "TEST",    st: '2024-12-01', et: '2024-12-31', location_ids:[], os:[] },
 
-    /** FrontStory */
-    { client_name: 'FrontStory ', adv_id: '7153560232919089154', adgroup_id: '1821299255602306', ea: 'LPV',   cat: "CTRL",    st: '2025-01-20', et: '2025-01-31', weekly: [] },
-    { client_name: 'FrontStory ', adv_id: '7153560232919089154', adgroup_id: '1821299587790882', ea: 'VC',    cat: "CTRL",    st: '2025-01-20', et: '2025-01-31', weekly: [] },
-    { client_name: 'FrontStory ', adv_id: '7153560232919089154', adgroup_id: '1821299090199569', ea: 'DLPV',  cat: "TEST",    st: '2025-01-20', et: '2025-01-31', weekly: [] },
 
-    /** Walmart */
-    { client_name: 'Walmart ', adv_id:"7012694723588571137",adgroup_id:"1816353795975266", ea:"DLPV",     cat: "TEST",    st: '2024-11-20', et: '2024-12-15', weekly: [] },
-    { client_name: 'Walmart ', adv_id:"7012694723588571137",adgroup_id:"1816353806910514", ea:"LPV",      cat: "CTRL",    st: '2024-11-20', et: '2024-12-15', weekly: [] },
-    { client_name: 'Walmart ', adv_id:"7012694723588571137",adgroup_id:"1816448530762785", ea:"Clicks",   cat: "CTRL",    st: '2024-11-20', et: '2024-12-15', weekly: [] },
-    { client_name: 'Walmart ', adv_id:"7012694723588571137",adgroup_id:"1816353801216049", ea:"LPV",      cat: "CTRL",    st: '2024-11-20', et: '2024-12-15', weekly: [] },
-    { client_name: 'Walmart ', adv_id:"7012694723588571137",adgroup_id:"1816448522272785", ea:"Clicks",   cat: "CTRL",    st: '2024-11-20', et: '2024-12-15', weekly: [] },
-    { client_name: 'Walmart ', adv_id:"7012694723588571137",adgroup_id:"1816353789936641", ea:"DLPV",     cat: "TEST",    st: '2024-11-20', et: '2024-12-15', weekly: [] },
+/** Google */
+// { client_name: 'Google', adv_id: '7295828129405304834', adgroup_id: '1813087034872849', ea: 'Clicks',  cat: "TEST",    st: '2024-12-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Google', adv_id: '7295828129405304834', adgroup_id: '1813088595347521', ea: 'Clicks',  cat: "TEST",    st: '2024-12-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Google', adv_id: '7295828129405304834', adgroup_id: '1818639510137889', ea: 'LPV',     cat: "TEST",    st: '2024-12-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Google', adv_id: '7295828129405304834', adgroup_id: '1818639913073666', ea: 'LPV',     cat: "TEST",    st: '2024-12-01', et: '2025-02-10', location_ids:[], os:[] },
+
+
+/** Edmunds */
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1785383570051105', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1816367721120785', ea: 'DLPV',    cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1816366087863313', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1816367328257025', ea: 'DLPV',    cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1822187575457905', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1822546688739330', ea: 'DLPV',    cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1822730357218306', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Edmunds', adv_id: '7016021727943639042', adgroup_id: '1821984326959106', ea: 'DLPV',    cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+
+
+/** Glossier */
+// { client_name: 'Glossier', adv_id: '6883603160959549442', adgroup_id: '1819431600654354', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Glossier', adv_id: '6883603160959549442', adgroup_id: '1814991091529762', ea: 'LPV',    cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Glossier', adv_id: '6883603160959549442', adgroup_id: '1819431537320994', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+// { client_name: 'Glossier', adv_id: '6883603160959549442', adgroup_id: '1799432665953282', ea: 'LPV',    cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:[], os:[] },
+
+// /** Apple */
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818808332132450', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["Both"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818808669658146', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["iOS"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818805487235105', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["iOS"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818805487181825', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["iOS"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818805487242273', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["And"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818809001088033', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["And"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818804820334641', ea: 'DLPV',   cat: "TEST",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["And"] },
+
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818993785795698', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["Both"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818733712251106', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["iOS"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818733556978705', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["iOS"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1818993796140034', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["iOS"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1820728495083553', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["And"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1820728492583986', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["And"] },
+// { client_name: 'Apple', adv_id: '6961908603947089922', adgroup_id: '1820639523627009', ea: 'LPV',   cat: "CTRL",    st: '2025-01-01', et: '2025-02-10', location_ids:["6252001"], os:["And"] },
+
 
 
 ].concat(
@@ -213,15 +155,20 @@ async function getAdGroupMetrics(params) {
     const st            = params.st
     const et            = params.et === '' ? today : params.et
 
+
     const metrics = []
 
     /** 1. Life Time */
     {
+        const adGroupData = await getAdGroupData(adv_id, {adgroup_ids : [adgroup_id]})
+        console.log(`ad_group : ${adgroup_id} location_ids : ${adGroupData.location_ids} os : ${adGroupData.operating_systems}`)
         const metric = await getTTAMMetric(adv_id, adgroup_id, st, et)
         metrics.push({
             client_name,
             adv_id      : 'ADV'         + adv_id,
             adgroup_id  : cat + adgroup_id,
+            location_ids: adGroupData.location_ids,
+            os: adGroupData.operating_systems,
             ea, cat,
             date        : "LifeTime", 
             ...metric
@@ -229,18 +176,18 @@ async function getAdGroupMetrics(params) {
     }
 
     /** 3. Daily */
-    for(let i = st; i != et && i != datePlus(today, 1); i = datePlus(i, 1)) {
-        const metric = await getTTAMMetric(adv_id, adgroup_id, i, i)
-        metrics.push({
-            client_name,
-            adv_id      : 'ADV'         + adv_id,
-            adgroup_id  : cat + adgroup_id,
-            ea, cat,
-            date        : 'D' + i,
-            ...metric
-        })
-        await delayms(100)
-    }
+    // for(let i = st; i != et && i != datePlus(today, 1); i = datePlus(i, 1)) {
+    //     const metric = await getTTAMMetric(adv_id, adgroup_id, i, i)
+    //     metrics.push({
+    //         client_name,
+    //         adv_id      : 'ADV'         + adv_id,
+    //         adgroup_id  : cat + adgroup_id,
+    //         ea, cat,
+    //         date        : 'D' + i,
+    //         ...metric
+    //     })
+    //     await delayms(100)
+    // }
 
 
     console.table(metrics, ['date', 'client_name',  'adgroup_id', 'ea', 'cat', 'cost($USD)', 'impression', 'lpv', 'cplpv',  'dlpv', 'cpdlpv',  'atc', 'cp'])
