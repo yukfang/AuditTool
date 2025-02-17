@@ -92,6 +92,7 @@ router.get('/catalog-video',   (ctx, next) =>{ ctx.body = fs.readFileSync('audit
 router.get('/s\\+app',         (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+app.html',              {encoding:'utf8', flag:'r'});})
 router.get('/s\\+traffic',     (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+traffic.html',          {encoding:'utf8', flag:'r'});})
 router.get('/s\\+lead',        (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+lead.html',             {encoding:'utf8', flag:'r'});})
+router.get('/android-d0',      (ctx, next) =>{ ctx.body = fs.readFileSync('audit-android-d0.html',         {encoding:'utf8', flag:'r'});})
 
 
 
@@ -117,6 +118,7 @@ router.get('/css/home.css', (ctx, next) =>{
   ctx.body = fs.readFileSync('./assets/css/home.css', {encoding:'utf8', flag:'r'});
 })
 
+router.get('/test.html',   (ctx, next) => {ctx.body = fs.readFileSync('test.html',   {encoding:'utf8', flag:'r'})})
 
 
 
