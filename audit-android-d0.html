@@ -1,360 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Android D0</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
-    <!-- Header Section -->
-    <script>
-      function audit2() {
-        const campaignIds = [];
-        for (let i = 1; i <= inputCount; i++) {
-          const campaignId = document.getElementById(`campaignId${i}`).value;
-          if (campaignId) campaignIds.push(campaignId);
-        }
-    
-        if (campaignIds.length < 2) {
-          alert('Please enter at least 2 campaign IDs to compare.');
-          return;
-        }
-    
-        // Simulate fetching data for each campaign (replace this with your actual API call)
-        const campaignData = campaignIds.map(id => fetchCampaignData(id));
-    
-        // Dynamically update the table
-        updateAuditTable(campaignIds, campaignData);
-      }
-    
-      // Dummy function to simulate campaign data (replace with actual API data)
-      function fetchCampaignData(campaignId) {
-        return {
-          id: campaignId,
-          section1: {
-            propertyA: Math.random().toFixed(2),  // Replace with actual data
-            propertyB: Math.random().toFixed(2)
-          },
-          section2: {
-            propertyC: Math.random().toFixed(2),
-            propertyD: Math.random().toFixed(2)
-          }
-        };
-      }
-    
-      function updateAuditTable(campaignIds, campaignData) {
-        const auditHeader = document.getElementById('auditHeader');
-        const auditBody = document.getElementById('auditBody');
-        
-        // Clear previous table content
-        while (auditHeader.children.length > 3) {
-          auditHeader.removeChild(auditHeader.lastChild);
-        }
-        auditBody.innerHTML = '';
-    
-        // Add campaign columns in the header
-        campaignIds.forEach(id => {
-          const th = document.createElement('th');
-          th.textContent = `Campaign ${id}`;
-          auditHeader.appendChild(th);
-        });
-    
-        // Define sections and properties to be audited
-        const sections = [
-          { section: 'Section 1', property: 'Property A', key: 'propertyA' },
-          { section: 'Section 1', property: 'Property B', key: 'propertyB' },
-          { section: 'Section 2', property: 'Property C', key: 'propertyC' },
-          { section: 'Section 2', property: 'Property D', key: 'propertyD' }
-        ];
-    
-        // Populate the table body with audit results
-        sections.forEach(({ section, property, key }) => {
-          const row = document.createElement('tr');
-    
-          // Section and property columns
-          row.innerHTML = `
-            <td>${section}</td>
-            <td>${property}</td>
-            <td>Compare Result</td>`;
-    
-          // Add data for each campaign
-          campaignData.forEach(data => {
-            const cell = document.createElement('td');
-            cell.textContent = data[section.toLowerCase()][key] || 'N/A';
-            row.appendChild(cell);
-          });
-    
-          auditBody.appendChild(row);
-        });
-      }
-    </script>
-
-    <div class="input-container">
-      <!-- First Line: Audit button and inputs -->
-      <div class="input-row" id="inputRow">
-        <button onclick="audit2()">Audit</button>
-        <button onclick="addInputSlot()">+</button>
-        <button onclick="removeInputSlot()">-</button>
-        <input type="text" id="advertiserId" placeholder="Enter Advertiser ID">
-        <input type="text" id="campaignId1"  placeholder="Enter Campaign ID 1">
-        <input type="text" id="campaignId2"  placeholder="Enter Campaign ID 2">
-      </div>
-    
-      <!-- Second Line: Sample Data buttons -->
-      <div class="button-row">
-        <button onclick="autoFillTestData('6927760983595155458', '1818349487376386', '1818349493967922')"> 2 Campaigns </button>
-        <button onclick="autoFillTestData('7325100941009731586', '1817623149104178', '1817623143443474', '123')">3 Campaigns </button>
-        <button onclick="autoFillTestData('6972294261718925314', '1816914309103649', '1816914687288354', '1', '2')">4 Campaigns </button>
-      </div>
-    
-      <progress id="progressBar" value="0" max="100"></progress>
-    </div>
-  
-    <h2 class="collapsible active">Audit Results - Click to Fold</h2>
-    <div class="content" style="display: block;">
-      <table class="audit-table" id="auditTable">
-        <thead>
-          <tr id="auditHeader">
-            <th>Section</th>
-            <th>Property</th>
-            <th>Audit Result</th>
-            <!-- Campaign columns will be added here -->
-          </tr>
-        </thead>
-        <tbody id="auditBody">
-          <!-- Audit results will be injected here -->
-        </tbody>
-      </table>
+  <header></header>   <br><br>
+  <div class="input-container">
+    <!-- First Line: Audit button and inputs -->
+    <div class="input-row" id="inputRow">
+      <button onclick="audit()">Audit</button>
+      <button onclick="addInputSlot()">+</button>
+      <button onclick="removeInputSlot()">-</button>
+      <input type="text" id="advertiserId" placeholder="Enter Advertiser ID">
+      <input type="text" id="campaignId1" placeholder="Enter Campaign ID 1">
+      <input type="text" id="campaignId2" placeholder="Enter Campaign ID 2">
     </div>
 
 
-    <h2 class="collapsible active">Changelog - Click to Expand</h2>
-    <div class="content" style="display: block;">
-      <table class="changelog-table" id="changelogTable">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Test Group Changes</th>
-            <th>Control Group Changes</th>
-          </tr>
-        </thead>
-        <tbody id="changelogBody">
-          <!-- Changelog results will be injected here -->
-        </tbody>
-      </table>
+
+    <!-- Second Line: Sample Data buttons -->
+    <div class="button-row">
+      <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818224139968577')">2 Campaigns</button>
+      <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577')">3 Campaigns </button>
+      <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577', '1818226692510770')">4 Campaigns </button>
     </div>
-  
-    <h2 class="collapsible">Meta Data - Click to Expand</h2>
-    <div class="content">
-      <table class="comparison-table" id="comparisonTable">
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Property</th>
-            <th id="header1">Test Group Campaign</th>
-            <th id="header2">Control Group Campaign</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-          <!-- Comparison results will be injected here -->
-        </tbody>
-      </table>
-    </div>
+
+    <progress id="progressBar" value="0" max="100"></progress>
+  </div>
+
+  <h2 class="collapsible active">Audit Results - Click to Fold</h2>
+  <div class="content" style="display: block;">
+    <table class="audit-table" id="auditTable">
+      <thead>
+        <tr id="auditHeader">
+          <th>Section</th>
+          <th>Property</th>
+          <th>Audit Result</th>
+          <!-- Campaign columns will be added here -->
+        </tr>
+      </thead>
+      <tbody id="auditBody">
+        <!-- Audit results will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+
+  <h2 class="collapsible active">Changelog - Click to Expand</h2>
+  <div class="content" style="display: block;">
+    <table class="changelog-table" id="changelogTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Test Group Changes</th>
+          <th>Control Group Changes</th>
+        </tr>
+      </thead>
+      <tbody id="changelogBody">
+        <!-- Changelog results will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="collapsible">Meta Data - Click to Expand</h2>
+  <div class="content">
+    <table class="comparison-table" id="comparisonTable">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Property</th>
+          <th id="header1">Test Group Campaign</th>
+          <th id="header2">Control Group Campaign</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- Comparison results will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+
+  <script>
+
+    const progressBar = document.getElementById('progressBar');
+    progressBar.value = 0;
+
+    async function audit() {
+      /** 0. Clear Table */
+      clearTable()
+
+      /** 1. Collect Inputs */
+      const { advertiserId, campaignIds } = collectInputs()
+      console.log(advertiserId, campaignIds);
+
+      /** 2. Fetch Data */
+      const dataList = [] 
+      for(let i = 0; i < campaignIds.length; i++) {
+        console.log(`Fetch Campaign ${i} : ${campaignIds[i]}`)
+        const campaignId = campaignIds[i];
+        const data = await fetchAndMergeData(advertiserId, campaignId, progressBar);
+        dataList.push(data);
+        progressBar.value = (i + 1) / campaignIds.length * 100;
+      }
+    
+
+      /** 3. Generate Table Data from dataList */
+      let auditData = []
+      auditData.push({
+        section: "Basic Info",
+        properties: [
+          { property: "campaign_id",                    campaigns: dataList.map(x => x.campaignData.campaign_id),                     audit_result: "" },
+          { property: "campaign_name",                  campaigns: dataList.map(x => x.campaignData.campaign_name),                   audit_result: "" },
+          { property: "is_smart_performance_campaign",  campaigns: dataList.map(x => x.campaignData.is_smart_performance_campaign),   audit_result: "" },          
+          { property: "app_promotion_type",             campaigns: dataList.map(x => x.campaignData.app_promotion_type),              audit_result: "" },
+
+          { property: "adgroup_id",                     campaigns: dataList.map(x => x.adgroupData.adgroup_id),                       audit_result: "" },
+          { property: "adgroup_name",                   campaigns: dataList.map(x => x.adgroupData.adgroup_name),                     audit_result: "" },
+          { property: "promotion_type",                 campaigns: dataList.map(x => x.adgroupData.promotion_type),                   audit_result: "" },
+          { property: "package",                        campaigns: dataList.map(x => x.adgroupData.package),                          audit_result: "" },
+        ]
+      })
+      auditData.push({
+        section: "Bidding",
+        properties: [
+          { property: "campaign_budget",                  campaigns: dataList.map(x => x.campaignData.budget),                     audit_result: "" },
+          { property: "adgroup_budget",                   campaigns: dataList.map(x => x.adgroupData.budget),                      audit_result: "" },
+          { property: "billing_event",                    campaigns: dataList.map(x => x.adgroupData.billing_event),               audit_result: "" },
+          { property: "bid_type",                         campaigns: dataList.map(x => x.adgroupData.bid_type),                    audit_result: "" },
+
+          { property: "deep_bid_type",                    campaigns: dataList.map(x => x.adgroupData.deep_bid_type),                  audit_result: "" },
+          { property: "conversion_bid_price",             campaigns: dataList.map(x => x.adgroupData.conversion_bid_price),           audit_result: "" },
+          { property: "deep_cpa_bid",                     campaigns: dataList.map(x => x.adgroupData.deep_cpa_bid),                   audit_result: "" },
+          { property: "optimization_event",               campaigns: dataList.map(x => x.adgroupData.optimization_event),             audit_result: "" },
+          { property: "secondary_optimization_event",     campaigns: dataList.map(x => x.adgroupData.secondary_optimization_event),   audit_result: "" },
+        ]
+      })
+      auditData.push({
+        section: "Targeting",
+        properties: [
+          { property: "placements",                      campaigns: dataList.map(x => x.adgroupData.placements),                     audit_result: "" },
+          { property: "search_result_enabled",           campaigns: dataList.map(x => x.adgroupData.search_result_enabled),          audit_result: "" },
+          { property: "age_groups",                      campaigns: dataList.map(x => x.adgroupData.age_groups),                     audit_result: "" },
+          { property: "location_ids",                    campaigns: dataList.map(x => x.adgroupData.location_ids),                   audit_result: "" },
+          { property: "excluded_custom_actions",         campaigns: dataList.map(x => x.adgroupData.excluded_custom_actions),        audit_result: "" },
+          { property: "included_custom_actions",         campaigns: dataList.map(x => x.adgroupData.included_custom_actions),        audit_result: "" },
+          { property: "excluded_audience_ids",           campaigns: dataList.map(x => x.adgroupData.excluded_audience_ids),          audit_result: "" },
+          { property: "interest_keyword_ids",            campaigns: dataList.map(x => x.adgroupData.interest_keyword_ids),           audit_result: "" },
+
+
+        ]
+      })
+      auditData.push({
+        section: "Attribution",
+        properties: [
+          { property: "click_attribution_window",         campaigns: dataList.map(x => x.adgroupData.click_attribution_window),        audit_result: "" },
+          { property: "view_attribution_window",          campaigns: dataList.map(x => x.adgroupData.view_attribution_window),         audit_result: "" },
+          { property: "attribution_event_count",          campaigns: dataList.map(x => x.adgroupData.attribution_event_count),         audit_result: "" },
+          { property: "vbo_window",                       campaigns: dataList.map(x => x.adgroupData.vbo_window),                      audit_result: "" },
+        ]
+      })
+      auditData.push({
+        section: "Creatives",
+        properties: [
+          { property: "ad_number",            campaigns: dataList.map(x => x.creativeData.map(y=>y.ad_id).length),                      audit_result: "" },
+          { property: "video_number",         campaigns: dataList.map(x => x.creativeData.map(y=>y.video_id).length),                   audit_result: "" },
+          { property: "videos",               campaigns: dataList.map(x => x.creativeData.map(y=>y.video_id)),                          audit_result: "" },
+          { property: "ad_text",              campaigns: dataList.map(x => [...new Set(x.creativeData.map(y=>y.ad_text))]),             audit_result: "" },
+          { property: "text_number",          campaigns: dataList.map(x => [...new Set(x.creativeData.map(y=>y.ad_text))].length),      audit_result: "" },
+        ]
+      })
+
+
+      console.log(auditData)
+
+
+
+      generateTable(auditData);
+    }
+  </script>
+
 
 
   <script>
     function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
-        const merged = { ...adgroupData };
-        // Append Creative Data
-        merged['creativeData'] = creativeData
-        merged['creative_number'] = creativeData.length
-        merged['videos']            = [... new Set(creativeData.map(x => x.video_id))]
-        merged['ad_text']           = [... new Set(creativeData.map(x => x.ad_text))]
-        merged['landing_page_url']  = [... new Set(creativeData.map(x => x.landing_page_url))].sort()
+      const merged = { ...adgroupData };
+      // Append Creative Data
+      merged['creativeData'] = creativeData
+      merged['creative_number'] = creativeData.length
+      merged['videos'] = [... new Set(creativeData.map(x => x.video_id))]
+      merged['ad_text'] = [... new Set(creativeData.map(x => x.ad_text))]
+      merged['landing_page_url'] = [... new Set(creativeData.map(x => x.landing_page_url))].sort()
 
 
-        merged['video_number'] = merged['videos'].length
-        merged['text_number']  = [... new Set(creativeData.map(x => x.ad_text))].length
+      merged['video_number'] = merged['videos'].length
+      merged['text_number'] = [... new Set(creativeData.map(x => x.ad_text))].length
 
-        merged['changesummary'] = changeSummary.summary
-        merged['changelog'] = changeSummary.records.map(x=>x.activityDetails)
+      merged['changesummary'] = changeSummary.summary
+      merged['changelog'] = changeSummary.records.map(x => x.activityDetails)
 
+      for (const key in campaignData) {
+        if (merged[key]) {
+          if ([
+            "location_ids",
+            "excluded_audience_ids",
+            "budget_mode",
+            "secondary_status",
+            "placements",
+            "deep_bid_type",
+          ].indexOf(key) !== -1) {
+            const valueSet = new Set([].concat(merged[key]).concat(campaignData[key]))
+            valueSet.delete(null)
+            merged[key] = [...valueSet]
+          } else if ("budget" === key) {
+            if (campaignData[key] !== 0) {
+              // merged[key] = campaignData[key]
+              merged['campaign_budget'] = campaignData[key]
+              merged['adgroup_budget'] = merged[key]
 
-
-
-        for (const key in campaignData) {
-            if (merged[key]) {
-                if([
-                    "location_ids",
-                    "excluded_audience_ids",
-                    "budget_mode",
-                    "secondary_status",
-                    "placements",
-                    "deep_bid_type",
-                ].indexOf(key) !== -1) {
-                    const valueSet = new Set([].concat(merged[key]).concat(campaignData[key]))
-                    valueSet.delete(null)
-                    merged[key] =  [...valueSet]    
-                } else if ("budget" === key) {
-                    if(campaignData[key] !== 0) {
-                        // merged[key] = campaignData[key]
-                        merged['campaign_budget'] = campaignData[key]
-                        merged['adgroup_budget'] = merged[key]
-
-                    } else {
-
-                    }
-                    // merged[key] = `Campaign Level: ${campaignData[key]}; Adgroup Level: ${merged[key]}`;
-                } 
-                else if (merged[key] === campaignData[key]) {
-                    merged[key] = campaignData[key];
-                } else {
-                    merged[key] = `${merged[key]}, ${campaignData[key]}`;
-                }
             } else {
-                merged[key] = campaignData[key];
+
             }
+            // merged[key] = `Campaign Level: ${campaignData[key]}; Adgroup Level: ${merged[key]}`;
+          }
+          else if (merged[key] === campaignData[key]) {
+            merged[key] = campaignData[key];
+          } else {
+            merged[key] = `${merged[key]}, ${campaignData[key]}`;
+          }
+        } else {
+          merged[key] = campaignData[key];
         }
+      }
 
-        return merged;
-    }
-
-    async function fetchAndMergeData(advertiserId, adgroupId, progressBar) {
-        console.log(`1. fetch ad group data : ${adgroupId} `)
-      // Fetch Ad Group Data
-        const adgroupData = await fetchAdgroupData(advertiserId, adgroupId);
-        // console.log(adgroupData)
-
-        const campaignId=adgroupData.campaign_id
-        console.log(campaignId)
-
-        progressBar.value += 10
-        const isSpc = adgroupData?.is_smart_performance_campaign;
-
-        // Fetch Campaign Data
-        let campaignData = isSpc
-            ? await fetchSpcCampaignData(advertiserId, campaignId)
-            : await fetchCampaignData(advertiserId, campaignId);
-        progressBar.value += 10
-
-
-        // Fetch Creative Data 
-        console.log(`3. fetch creative data : ${adgroupId} `)
-
-        const creativeData = await getCreativeData(advertiserId,  adgroupId);
-        // if (!isSpc) {
-        //     const media_info_list_normal = await getCreativeData(advertiserId, null, adgroupId);
-        //     campaignData = { ...campaignData, media_info_list_normal }; // Merge creative data into campaign data
-        // }
-        progressBar.value += 10
-
-        /* 4. Fetch Change Log*/
-        console.log(`4. fetch changelog data : ${adgroupId} `)
-        const changeSummary = await getChangeSummary(advertiserId,  adgroupId)
-        
-        console.log(changeSummary)
-        return mergeData(campaignData, adgroupData, creativeData, changeSummary)
-        // return {campaignData, adgroupData, creativeData}
+      return merged;
     }
 
     function normalizeValue(value) {
-    if (value === null || value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) {
-      return 'N/A';
-    }
-    if (Array.isArray(value)) {
-      return JSON.stringify(value.sort());
-    }
-    if (typeof value === 'object') {
-      return JSON.stringify(value);
-    }
-    return value.toString();
-  }
-
-  function compareValues(value1, value2) {
-    return normalizeValue(value1) === normalizeValue(value2) || (normalizeValue(value1) === 'N/A' && normalizeValue(value2) === 'N/A');
-  }
-
-  async function audit3() {
-    document.getElementById('tableBody').innerHTML = ''; // Clear Meta Data table
-    document.getElementById('auditBody').innerHTML = ''; // Clear Audit Results table
-    document.getElementById('changelogBody').innerHTML = ''; // Clear ChangeLog Results table
-
-
-    const advertiserId = document.getElementById('advertiserId').value;
-    const testAdGroupId = document.getElementById('testAdGroupId').value;
-    const controlAdGroupId = document.getElementById('controlAdGroupId').value;
-
-    if (!advertiserId || !testAdGroupId || !controlAdGroupId) {
-      alert("Please enter all required fields.");
-      return;
+      if (value === null || value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) {
+        return 'N/A';
+      }
+      if (Array.isArray(value)) {
+        return JSON.stringify(value.sort());
+      }
+      if (typeof value === 'object') {
+        return JSON.stringify(value);
+      }
+      return value.toString();
     }
 
-    // Initialize progress bar
-    const progressBar = document.getElementById('progressBar');
-    progressBar.value = 0;
-
-    try {
-      const testCampaign = await fetchAndMergeData(advertiserId, testAdGroupId, progressBar);
-      console.log(`progress = ${50}`)
-      progressBar.value = 50; // Update progress bar to 25%
-
-      const controlCampaign = await fetchAndMergeData(advertiserId, controlAdGroupId, progressBar);
-      console.log(`progress = ${99}`)
-      progressBar.value = 99; // Update progress bar to 50%
-
-
-      document.getElementById('header1').textContent = `Campaign ${testAdGroupId}`;
-      document.getElementById('header2').textContent = `Campaign ${controlAdGroupId}`;
-
-
-      updateTable([testCampaign, controlCampaign]);
-      updateAuditTable([testCampaign, controlCampaign]);
-
-      const changeLogs = extractChangelog(testCampaign.changelog, controlCampaign.changelog);
-      console.log(changeLogs);
-      updateChangelogTable(changeLogs);
-      progressBar.value = 100; // Update progress bar to 100%
-
-    } catch (error) {
-      console.error("Error comparing campaigns:", error);
+    function compareValues(value1, value2) {
+      return normalizeValue(value1) === normalizeValue(value2) || (normalizeValue(value1) === 'N/A' && normalizeValue(value2) === 'N/A');
     }
-  }
 
-  function extractChangelog(testCampaign, controlCampaign) {
-    const testChanges = testCampaign.map(record => ({
+    function extractChangelog(testCampaign, controlCampaign) {
+      const testChanges = testCampaign.map(record => ({
         date: record.substring(0, 10),
         testGroupChanges: record.substring(18, record.length),
         controlGroupChanges: ''
-    }));
+      }));
 
-    const controlChanges = controlCampaign.map(record => ({
-      date: record.substring(0, 10),
-      testGroupChanges: '',
+      const controlChanges = controlCampaign.map(record => ({
+        date: record.substring(0, 10),
+        testGroupChanges: '',
         controlGroupChanges: record.substring(18, record.length),
-    }));
+      }));
 
-    const changesMap = new Map();
+      const changesMap = new Map();
 
-    testChanges.forEach(change => {
+      testChanges.forEach(change => {
         if (!changesMap.has(change.date)) {
-            changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
+          changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
         }
         changesMap.get(change.date).testGroupChanges += change.testGroupChanges + '\r\n';
-    });
+      });
 
-    controlChanges.forEach(change => {
+      controlChanges.forEach(change => {
         if (!changesMap.has(change.date)) {
-            changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
+          changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
         }
         changesMap.get(change.date).controlGroupChanges += change.controlGroupChanges + '\r\n';
-    });
+      });
 
-    const combinedChanges = Array.from(changesMap.values());
-    combinedChanges.sort((b, a) => new Date(a.date) - new Date(b.date));
+      const combinedChanges = Array.from(changesMap.values());
+      combinedChanges.sort((b, a) => new Date(a.date) - new Date(b.date));
 
-    return combinedChanges;
-  }
+      return combinedChanges;
+    }
 
     function updateTable(campaigns) {
       const properties = new Set();
@@ -403,10 +339,11 @@
         tableBody.appendChild(row);
       });
     }
+
     function updateAuditTable(campaigns) {
       const auditSections = {
         "Campaign Basic Information": [
-          "campaign_name", 
+          "campaign_name",
           "campaign_id",
           "adgroup_id",
           "adgroup_name",
@@ -449,60 +386,60 @@
           "videos",
           "ad_text",
         ],
-        "Change Summary" : [
+        "Change Summary": [
           // "changelog",
           "changesummary"
         ],
         "Other": [
 
         ]
-    };
+      };
 
-    const highlightedProperties = [
+      const highlightedProperties = [
         // "campaign_name", 
         // "campaign_id",
         "adgroup_id",
         "adgroup_name",
-    ]; // Properties to highlight
-    const auditBody = document.getElementById('auditBody');
-    auditBody.innerHTML = '';
+      ]; // Properties to highlight
+      const auditBody = document.getElementById('auditBody');
+      auditBody.innerHTML = '';
 
-    Object.keys(auditSections).forEach(section => {
-      let sectionRowCount = auditSections[section].length; // Count how many rows will be in this section
+      Object.keys(auditSections).forEach(section => {
+        let sectionRowCount = auditSections[section].length; // Count how many rows will be in this section
 
-      auditSections[section].forEach((property, index) => {
-        const values = campaigns.map(campaign => normalizeValue(campaign[property]));
-        const row = document.createElement('tr');
+        auditSections[section].forEach((property, index) => {
+          const values = campaigns.map(campaign => normalizeValue(campaign[property]));
+          const row = document.createElement('tr');
 
-        if (index === 0) { // Only add section cell on first property of each section
-          const sectionCell = document.createElement('td');
-          sectionCell.textContent = section;
-          sectionCell.rowSpan = sectionRowCount; // Merge cells vertically
-          row.appendChild(sectionCell);
-        }
-
-        const propertyCell = document.createElement('td');
-        propertyCell.textContent = property;
-        row.appendChild(propertyCell);
-
-        values.forEach(value => {
-          const valueCell = document.createElement('td');
-          valueCell.textContent = value;
-          // Highlight differences
-          if (values[0] !== values[1]) {
-            valueCell.style.backgroundColor = '#ffcccc'; // Use any color you prefer
+          if (index === 0) { // Only add section cell on first property of each section
+            const sectionCell = document.createElement('td');
+            sectionCell.textContent = section;
+            sectionCell.rowSpan = sectionRowCount; // Merge cells vertically
+            row.appendChild(sectionCell);
           }
-          // Apply yellow background to specific properties
-          if (highlightedProperties.includes(property)) {
-            valueCell.style.backgroundColor = 'lightyellow';
-          }
-          row.appendChild(valueCell);
+
+          const propertyCell = document.createElement('td');
+          propertyCell.textContent = property;
+          row.appendChild(propertyCell);
+
+          values.forEach(value => {
+            const valueCell = document.createElement('td');
+            valueCell.textContent = value;
+            // Highlight differences
+            if (values[0] !== values[1]) {
+              valueCell.style.backgroundColor = '#ffcccc'; // Use any color you prefer
+            }
+            // Apply yellow background to specific properties
+            if (highlightedProperties.includes(property)) {
+              valueCell.style.backgroundColor = 'lightyellow';
+            }
+            row.appendChild(valueCell);
+          });
+
+          auditBody.appendChild(row);
         });
-
-        auditBody.appendChild(row);
       });
-    });
-  }
+    }
 
     function autoFillTestData(advertiserId, ...campaignIds) {
       setInputSlot(campaignIds.length); // +1 because there is also the Advertiser ID input
@@ -517,21 +454,21 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        var coll = document.getElementsByClassName("collapsible");
-        for (var i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
+    document.addEventListener("DOMContentLoaded", function () {
+      var coll = document.getElementsByClassName("collapsible");
+      for (var i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+          this.classList.toggle("active");
+          var content = this.nextElementSibling;
+          if (content.style.display === "block") {
             content.style.display = "none";
             this.textContent = this.textContent.replace("Fold", "Expand");
-            } else {
+          } else {
             content.style.display = "block";
             this.textContent = this.textContent.replace("Expand", "Fold");
-            }
+          }
         });
-        }
+      }
     });
   </script>
   <script src="fetch_mapi.js"></script>
@@ -541,60 +478,60 @@
     function highlightActiveLink() {
       // Get the current page URL
       const currentPage = window.location.pathname;
-  
+
       // Get all the header links
       const links = document.querySelectorAll('header a');
-  
+
       // Loop through all links and add/remove the 'active' class
       links.forEach(link => {
         // Reset active state
         link.classList.remove('active');
-  
+
         // Special case for the "Home" link ("/")
-        if(currentPage === '/' && link.getAttribute('href') === '/') {
+        if (currentPage === '/' && link.getAttribute('href') === '/') {
           link.classList.add('active');
-        }  
-        if(currentPage.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/') {
+        }
+        if (currentPage.includes(link.getAttribute('href')) && link.getAttribute('href') !== '/') {
           link.classList.add('active'); // Add 'active' class to the matching link
         }
       });
     }
-  
+
     // Call the function to highlight the active link when the page loads
     document.addEventListener("DOMContentLoaded", highlightActiveLink);
   </script>
-  
+
   <script>
     function updateChangelogTable(changeLog) {
-        const changelogBody = document.getElementById('changelogBody');
-        changelogBody.innerHTML = '';
+      const changelogBody = document.getElementById('changelogBody');
+      changelogBody.innerHTML = '';
 
-        changeLog.forEach(change => {
-            const row = document.createElement('tr');
-            
-            const dateCell = document.createElement('td');
-            dateCell.textContent = change.date;
-            row.appendChild(dateCell);
-            
-            const testGroupCell = document.createElement('td');
-            testGroupCell.innerHTML = change.testGroupChanges.trim().replace(/\r\n/g, '<br>');
-            row.appendChild(testGroupCell);
-            
-            const controlGroupCell = document.createElement('td');
-            controlGroupCell.innerHTML = change.controlGroupChanges.trim().replace(/\r\n/g, '<br>');
-            row.appendChild(controlGroupCell);
-            
-            changelogBody.appendChild(row);
-        });
+      changeLog.forEach(change => {
+        const row = document.createElement('tr');
+
+        const dateCell = document.createElement('td');
+        dateCell.textContent = change.date;
+        row.appendChild(dateCell);
+
+        const testGroupCell = document.createElement('td');
+        testGroupCell.innerHTML = change.testGroupChanges.trim().replace(/\r\n/g, '<br>');
+        row.appendChild(testGroupCell);
+
+        const controlGroupCell = document.createElement('td');
+        controlGroupCell.innerHTML = change.controlGroupChanges.trim().replace(/\r\n/g, '<br>');
+        row.appendChild(controlGroupCell);
+
+        changelogBody.appendChild(row);
+      });
     }
-</script>
+  </script>
 
-<script>
-  /** Input Flow */
-  let inputCount = 2; // Initial number of campaign ID inputs
+  <script>
+    /** Input Flow */
+    let inputCount = 2; // Initial number of campaign ID inputs
 
-  function addInputSlot() {
-      if(inputCount === 4) return 
+    function addInputSlot() {
+      if (inputCount === 4) return
       inputCount++;
       const inputRow = document.getElementById('inputRow');
       const lastCampaignInput = inputRow.querySelector(`#campaignId${inputCount - 1}`);
@@ -602,21 +539,19 @@
       newInput.type = 'text';
       newInput.id = `campaignId${inputCount}`;
       newInput.placeholder = `Enter Campaign ID ${inputCount}`;
-      
-      inputRow.insertBefore(newInput, lastCampaignInput.nextSibling);
 
-      updateTableHeader(inputCount)
+      inputRow.insertBefore(newInput, lastCampaignInput.nextSibling);
     }
 
     // Function to remove the last input slot
-  function removeInputSlot() {
+    function removeInputSlot() {
       if (inputCount > 2) { // Ensure at least 2 input slots remain (Advertiser ID + 1 Campaign ID)
         const inputRow = document.getElementById('inputRow');
         inputRow.removeChild(inputRow.querySelector(`#campaignId${inputCount}`)); // Remove the last input
         inputCount--;
       }
     }
-  function setInputSlot(num) {
+    function setInputSlot(num) {
       const inputRow = document.getElementById('inputRow');
       while (inputCount < num) {
         addInputSlot();
@@ -626,9 +561,173 @@
         removeInputSlot();
       }
     }
+
+    function collectInputs() {
+      // Get the advertiser ID
+      const advertiserId = document.getElementById("advertiserId").value.trim();
+
+      // Collect all campaign IDs dynamically
+      const campaignInputs = document.querySelectorAll("input[id^='campaignId']");
+      console.log(campaignInputs);
+      const campaignIds = Array.from(campaignInputs).map(input => input.value.trim()).filter(id => id !== "");
+
+      // Pass to another function
+      // processInputs(advertiserId, ...campaignIds);
+      return { advertiserId, campaignIds }
+    }
+  </script>
+
+  <script src="header_builder.js"></script>
+
+
+  <script>
+    /** Data Pulling Flow */
+    async function fetchAndMergeData(advertiserId, campaignId, progressBar) {
+      /** 1. Fetch Campaign Data */
+      console.log('Fetching data for campaign', campaignId);
+      let campaignData = await fetchCampaignData(advertiserId, campaignId);
+      const isSpc = campaignData?.is_smart_performance_campaign;
+      if (isSpc == true) {
+        const campaignData = await fetchSpcCampaignData(advertiserId, campaignId);
+      }
+      campaignData.campaign_id = campaignId;
+
+      /** 2. Fetch AD GROUP DATA */
+      const adgroupData = await fetchAdgroupDataByCampaignId(advertiserId, campaignId);
+
+      /** 3. Fetch AD DATA */
+      const creativeData = await getCreativeDataByCampaignId(advertiserId, campaignId);
+
+
+      /** 4. Fetch Change Log*/
+      // const changeSummary = await getChangeSummary(advertiserId, adgroupId)
+
+      /** 5. Merge Data */
+      // return mergeData(campaignData, adgroupData, creativeData, changeSummary)
+      return { campaignData, adgroupData, creativeData }
+    }
+  </script>
+
+  <script>
+    function generateTable(jsonData) {
+      const auditHeader = document.getElementById("auditHeader");
+      const auditBody = document.getElementById("auditBody");
+
+      // Extract unique campaign IDs (assuming first section's properties define them)
+      const allCampaigns = jsonData[0].properties[0].campaigns;
+
+      // Append campaign columns dynamically
+      allCampaigns.forEach(campaign => {
+        const th = document.createElement("th");
+        th.textContent = `Campaign ${campaign}`;
+        auditHeader.appendChild(th);
+      });
+
+      // Generate table rows
+      jsonData.forEach(section => {
+        section.properties.forEach((prop, index) => {
+          const row = document.createElement("tr");
+
+          // Add section name only for the first property of each section (merged cell)
+          if (index === 0) {
+            const sectionCell = document.createElement("td");
+            sectionCell.textContent = section.section;
+            sectionCell.rowSpan = section.properties.length;
+            row.appendChild(sectionCell);
+          }
+
+          // Property name
+          const propertyCell = document.createElement("td");
+          propertyCell.textContent = prop.property;
+          row.appendChild(propertyCell);
+
+          // Audit Result
+          const auditCell = document.createElement("td");
+          auditCell.textContent = prop.audit_result;
+          row.appendChild(auditCell);
+
+          // Campaign values
+          prop.campaigns.forEach(value => {
+            const campaignCell = document.createElement("td");
+            campaignCell.textContent = value;
+            row.appendChild(campaignCell);
+          });
+
+          auditBody.appendChild(row);
+        });
+      });
+    }
+
+    function clearTable() {
+      const auditBody = document.getElementById("auditBody");
+      auditBody.innerHTML = '';
+
+      const headers = auditHeader.querySelectorAll("th");
+
+      for (let i = headers.length - 1; i >= 0; i--) {
+        if (headers[i].textContent.startsWith("Campaign")) {
+          headers[i].remove(); // 移除 Campaign 列
+        }
+      }
+    }
+
+  </script>
+
+<script>
+  const auditDataTemplate = {
+        "Campaign Basic Information": [
+          "campaign_name",
+          "campaign_id",
+          "adgroup_id",
+          "adgroup_name",
+          "is_smart_performance_campaign",
+          "promotion_type",
+          "package",
+        ],
+        "Bidding": [
+          // "budget",
+          "campaign_budget",
+          "adgroup_budget",
+          "billing_event",
+          "bid_type",
+          "deep_bid_type",
+          "conversion_bid_price",
+          "deep_cpa_bid",
+          "app_promotion_type",
+          "optimization_event",
+        ],
+        "Targeting": [
+          "placements",
+          "age_groups",
+          "location_ids",
+          "excluded_custom_actions",
+          "included_custom_actions",
+          "excluded_audience_ids",
+        ],
+        "Attribution": [
+          "click_attribution_window",
+          "view_attribution_window",
+          "engaged_view_attribution_window",
+          "attribution_event_count",
+          "vbo_window",
+        ],
+        "Creatives": [
+          "creative_number",
+          "landing_page_url",
+          "text_number",
+          "video_number",
+          "videos",
+          "ad_text",
+        ],
+        "Change Summary": [
+          // "changelog",
+          "changesummary"
+        ],
+        "Other": [
+
+        ]
+      };
 </script>
-
-<script src="header_builder.js"></script>
-
 </body>
+
 </html>

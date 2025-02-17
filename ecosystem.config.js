@@ -12,7 +12,7 @@ module.exports = {
 
       script: "./index.js",
       "watch": true,
-      name: "CatalogTracker"
+      name: "TSC Audit Tool"
     }
   ]
 }
