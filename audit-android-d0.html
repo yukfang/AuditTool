@@ -566,8 +566,7 @@
 
       // Collect all campaign IDs dynamically
       const campaignInputs = document.querySelectorAll("input[id^='campaignId']");
-      console.log(campaignInputs);
-      const campaignIds = Array.from(campaignInputs).map(input => input.value.trim()).filter(id => id !== "");
+      const campaignIds = Array.from(campaignInputs).map(input => input.value.trim()).filter(id => id !== "" && id != null);
 
       // Pass to another function
       // processInputs(advertiserId, ...campaignIds);
