@@ -40,7 +40,7 @@
         <tr id="auditHeader">
           <th>Section</th>
           <th>Property</th>
-          <th>Audit Result</th>
+          <th>Audit</th>
           <!-- Campaign columns will be added here -->
         </tr>
       </thead>
@@ -255,190 +255,6 @@
       return normalizeValue(value1) === normalizeValue(value2) || (normalizeValue(value1) === 'N/A' && normalizeValue(value2) === 'N/A');
     }
 
-    function extractChangelog(testCampaign, controlCampaign) {
-      const testChanges = testCampaign.map(record => ({
-        date: record.substring(0, 10),
-        testGroupChanges: record.substring(18, record.length),
-        controlGroupChanges: ''
-      }));
-
-      const controlChanges = controlCampaign.map(record => ({
-        date: record.substring(0, 10),
-        testGroupChanges: '',
-        controlGroupChanges: record.substring(18, record.length),
-      }));
-
-      const changesMap = new Map();
-
-      testChanges.forEach(change => {
-        if (!changesMap.has(change.date)) {
-          changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
-        }
-        changesMap.get(change.date).testGroupChanges += change.testGroupChanges + '\r\n';
-      });
-
-      controlChanges.forEach(change => {
-        if (!changesMap.has(change.date)) {
-          changesMap.set(change.date, { date: change.date, testGroupChanges: '', controlGroupChanges: '' });
-        }
-        changesMap.get(change.date).controlGroupChanges += change.controlGroupChanges + '\r\n';
-      });
-
-      const combinedChanges = Array.from(changesMap.values());
-      combinedChanges.sort((b, a) => new Date(a.date) - new Date(b.date));
-
-      return combinedChanges;
-    }
-
-    function updateTable(campaigns) {
-      const properties = new Set();
-      const differences = [];
-
-      campaigns.forEach(campaign => {
-        Object.keys(campaign).forEach(prop => properties.add(prop));
-      });
-
-      properties.forEach(property => {
-        const values = campaigns.map(campaign => normalizeValue(campaign[property]));
-
-        if (values[0] !== values[1]) {
-          differences.push({ property, values });
-        }
-      });
-
-      const sortedProperties = [...differences.map(d => d.property), ...[...properties].filter(p => !differences.some(d => d.property === p))];
-
-      const tableBody = document.getElementById('tableBody');
-      tableBody.innerHTML = '';
-
-      sortedProperties.forEach(property => {
-        const row = document.createElement('tr');
-        const categoryCell = document.createElement('td');
-        categoryCell.textContent = "Meta Data";
-        row.appendChild(categoryCell);
-
-        const propertyCell = document.createElement('td');
-        propertyCell.textContent = property;
-        row.appendChild(propertyCell);
-
-        const values = campaigns.map(campaign => normalizeValue(campaign[property]));
-
-        values.forEach((value, index) => {
-          const valueCell = document.createElement('td');
-          valueCell.textContent = value;
-
-          if (values[0] !== values[1]) {
-            valueCell.style.backgroundColor = '#ffcccc';
-          }
-
-          row.appendChild(valueCell);
-        });
-
-        tableBody.appendChild(row);
-      });
-    }
-
-    function updateAuditTable(campaigns) {
-      const auditSections = {
-        "Campaign Basic Information": [
-          "campaign_name",
-          "campaign_id",
-          "adgroup_id",
-          "adgroup_name",
-          "is_smart_performance_campaign",
-          "promotion_type",
-          "package",
-        ],
-        "Bidding": [
-          // "budget",
-          "campaign_budget",
-          "adgroup_budget",
-          "billing_event",
-          "bid_type",
-          "deep_bid_type",
-          "conversion_bid_price",
-          "deep_cpa_bid",
-          "app_promotion_type",
-          "optimization_event",
-        ],
-        "Targeting": [
-          "placements",
-          "age_groups",
-          "location_ids",
-          "excluded_custom_actions",
-          "included_custom_actions",
-          "excluded_audience_ids",
-        ],
-        "Attribution": [
-          "click_attribution_window",
-          "view_attribution_window",
-          "engaged_view_attribution_window",
-          "attribution_event_count",
-          "vbo_window",
-        ],
-        "Creatives": [
-          "creative_number",
-          "landing_page_url",
-          "text_number",
-          "video_number",
-          "videos",
-          "ad_text",
-        ],
-        "Change Summary": [
-          // "changelog",
-          "changesummary"
-        ],
-        "Other": [
-
-        ]
-      };
-
-      const highlightedProperties = [
-        // "campaign_name", 
-        // "campaign_id",
-        "adgroup_id",
-        "adgroup_name",
-      ]; // Properties to highlight
-      const auditBody = document.getElementById('auditBody');
-      auditBody.innerHTML = '';
-
-      Object.keys(auditSections).forEach(section => {
-        let sectionRowCount = auditSections[section].length; // Count how many rows will be in this section
-
-        auditSections[section].forEach((property, index) => {
-          const values = campaigns.map(campaign => normalizeValue(campaign[property]));
-          const row = document.createElement('tr');
-
-          if (index === 0) { // Only add section cell on first property of each section
-            const sectionCell = document.createElement('td');
-            sectionCell.textContent = section;
-            sectionCell.rowSpan = sectionRowCount; // Merge cells vertically
-            row.appendChild(sectionCell);
-          }
-
-          const propertyCell = document.createElement('td');
-          propertyCell.textContent = property;
-          row.appendChild(propertyCell);
-
-          values.forEach(value => {
-            const valueCell = document.createElement('td');
-            valueCell.textContent = value;
-            // Highlight differences
-            if (values[0] !== values[1]) {
-              valueCell.style.backgroundColor = '#ffcccc'; // Use any color you prefer
-            }
-            // Apply yellow background to specific properties
-            if (highlightedProperties.includes(property)) {
-              valueCell.style.backgroundColor = 'lightyellow';
-            }
-            row.appendChild(valueCell);
-          });
-
-          auditBody.appendChild(row);
-        });
-      });
-    }
-
     function autoFillTestData(advertiserId, ...campaignIds) {
       setInputSlot(campaignIds.length); // +1 because there is also the Advertiser ID input
 
@@ -639,8 +455,13 @@
           row.appendChild(propertyCell);
 
           // Audit Result
+          // const auditCell = document.createElement("td");
+          // auditCell.textContent = prop.audit_result;
+          // row.appendChild(auditCell);
           const auditCell = document.createElement("td");
+          auditCell.classList.add("editable-cell");
           auditCell.textContent = prop.audit_result;
+          auditCell.addEventListener("click", () => showPopup(auditCell));
           row.appendChild(auditCell);
 
           // Campaign values
@@ -668,63 +489,172 @@
       }
     }
 
-  </script>
+    
 
-<script>
-  const auditDataTemplate = {
-        "Campaign Basic Information": [
-          "campaign_name",
-          "campaign_id",
-          "adgroup_id",
-          "adgroup_name",
-          "is_smart_performance_campaign",
-          "promotion_type",
-          "package",
-        ],
-        "Bidding": [
-          // "budget",
-          "campaign_budget",
-          "adgroup_budget",
-          "billing_event",
-          "bid_type",
-          "deep_bid_type",
-          "conversion_bid_price",
-          "deep_cpa_bid",
-          "app_promotion_type",
-          "optimization_event",
-        ],
-        "Targeting": [
-          "placements",
-          "age_groups",
-          "location_ids",
-          "excluded_custom_actions",
-          "included_custom_actions",
-          "excluded_audience_ids",
-        ],
-        "Attribution": [
-          "click_attribution_window",
-          "view_attribution_window",
-          "engaged_view_attribution_window",
-          "attribution_event_count",
-          "vbo_window",
-        ],
-        "Creatives": [
-          "creative_number",
-          "landing_page_url",
-          "text_number",
-          "video_number",
-          "videos",
-          "ad_text",
-        ],
-        "Change Summary": [
-          // "changelog",
-          "changesummary"
-        ],
-        "Other": [
+let currentPopup = null; // Track the current open popup
+let currentCell = null; // Track the current clicked cell
 
-        ]
-      };
+function showPopup(cell) {
+
+  // If the same cell is clicked again, don't do anything
+  if (currentCell === cell) return;
+
+  // Close the previous popup if it exists
+  if (currentPopup) {
+    currentPopup.style.display = "none";
+  }
+
+  // Create a new popup for the clicked cell
+  const popup = document.createElement("div");
+  popup.classList.add("popup");
+
+  // Get the previous input value and the saved pass/fail value (if any)
+  const previousInputValue = cell.getAttribute("data-input-value") || "";
+  const previousAuditResult = cell.getAttribute("data-audit-result") || ""; // "✅" or "❌"
+
+  const passLabel = document.createElement("label");
+  passLabel.textContent = "Pass: ✅";  
+  const passRadio = document.createElement("input");
+  passRadio.type = "radio";
+  passRadio.name = "auditResult";
+  passRadio.value = "✅";  
+  passLabel.appendChild(passRadio);
+  if (previousAuditResult === "✅") {
+    passRadio.checked = true; // Auto-select "Pass" if saved as "✅"
+  }
+  popup.appendChild(passLabel);
+
+  const failLabel = document.createElement("label");
+  failLabel.textContent = "Fail: ❌";  
+  const failRadio = document.createElement("input");
+  failRadio.type = "radio";
+  failRadio.name = "auditResult";
+  failRadio.value = "❌";  
+  failLabel.appendChild(failRadio);
+  if (previousAuditResult === "❌") {
+    failRadio.checked = true; 
+  }
+  popup.appendChild(failLabel);
+
+  // Create Save button
+  const saveButton = document.createElement("button");
+  saveButton.textContent = "Save";
+  saveButton.addEventListener("click", () => {
+    const selectedValue = document.querySelector('input[name="auditResult"]:checked').value;
+    const inputValue = input.value.trim(); // Get the current input value
+
+    // Save the input value and audit result in the cell
+    cell.textContent = selectedValue; // Save the selected result as "✅" or "❌"
+    cell.setAttribute("data-input-value", inputValue); // Store the input value in the cell
+    cell.setAttribute("data-audit-result", selectedValue); // Store the audit result (Pass/Fail)
+
+    // If the result is "❌", mark the row with a red background color
+    if (selectedValue === "❌") {
+      cell.closest("tr").style.backgroundColor = "#ffcccc"; // Mark the row red
+    } else {
+      cell.closest("tr").style.backgroundColor = ""; // Reset the background color if "✅"
+    }
+
+    popup.style.display = "none"; // Close the popup after saving
+    currentPopup = null; // Reset the current popup tracker
+    currentCell = null;  // Reset the current clicked cell tracker
+  });
+  popup.appendChild(saveButton);
+
+  // Create Cancel button
+  const cancelButton = document.createElement("button");
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => {
+    popup.style.display = "none"; // Just close the popup without saving
+    currentPopup = null; // Reset the current popup tracker
+    currentCell = null;  // Reset the current clicked cell tracker
+  });
+  popup.appendChild(cancelButton);
+
+  // Create Clear button
+  const clearButton = document.createElement("button");
+  clearButton.textContent = "Clear";
+  clearButton.addEventListener("click", () => {
+    // Clear the input field and reset the Pass/Fail flag
+    input.value = ""; // Clear the text in the input
+    const defaultValue = ""; // Reset the flag to empty (no selection)
+
+    // Save the cleared state in the cell
+    cell.textContent = defaultValue; // Clear the cell value
+    cell.setAttribute("data-input-value", ""); // Clear the stored input value
+    cell.setAttribute("data-audit-result", ""); // Clear the audit result
+
+    // Reset the background color for the row if cleared
+    cell.closest("tr").style.backgroundColor = ""; // Reset the row background color
+
+    popup.style.display = "none"; // Close the popup after clearing
+    currentPopup = null; // Reset the current popup tracker
+    currentCell = null;  // Reset the current clicked cell tracker
+  });
+  popup.appendChild(clearButton);
+
+  // Create a multi-line text input (textarea) instead of a single-line input
+  const input = document.createElement("textarea");  // Use textarea for multi-line input
+  input.placeholder = "Enter comments...";
+  input.value = previousInputValue; // Pre-fill with the stored value (or empty string)
+  input.wrap = "soft"; // Enable text wrapping within the textarea
+  input.style.width = "100%"; // Make the textarea fill the container width
+  input.style.height = "100px"; // Set the height for the textarea (adjustable)
+  input.style.resize = "vertical"; // Allow vertical resizing
+  popup.appendChild(input);
+
+  // If the "Fail" option is selected, set the default template text dynamically
+  failRadio.addEventListener("change", () => {
+    if (failRadio.checked) {
+      // Retrieve campaign IDs from the table header (th elements)
+      const headerCells = document.querySelectorAll("#auditTable thead th");
+      const row = cell.closest("tr");
+      const rowCells = row.querySelectorAll("td");
+      const campaignIDs = [];
+      const campaignValues = [];
+      
+      // Loop through the campaign columns in the header
+      headerCells.forEach((headerCell, index) => {
+        if (index > 2) { // Skip the first three columns (Section, Property, Audit)
+          const campaignID = headerCell.textContent.match(/Campaign (\d+)/)[1]; // Extract campaign ID from header text
+          campaignIDs.push(campaignID);
+        }
+      });
+
+      // console.log(`headerCells.length = ${headerCells.length}`)
+      // console.log(`rowCells.length = ${rowCells.length}`)
+      rowCells.forEach((rowCell, index) => {
+        console.log(`${index} : ${rowCell.textContent.trim()}`)
+        if (index > (2 + rowCells.length - headerCells.length)) { // Skip the first three columns (Section, Property, Audit)
+          const value = rowCell.textContent.trim(); // Get value for this campaign column
+          campaignValues.push(value);
+        }
+      });
+
+      // Format the input value with campaign IDs and values dynamically
+      const propertyName = rowCells[1 + (rowCells.length - headerCells.length)].textContent.trim(); // Extract the property name from the 2nd column
+      const defaultText = `<${propertyName}> doesn't meet requirement:\n` +
+        campaignIDs.map((id, idx) => `[${id}]: ${campaignValues[idx]}`).join("\n");
+
+      input.value = defaultText; // Set the dynamic text in the input field
+    }
+  });
+
+  // Add the popup to the body
+  document.body.appendChild(popup);
+
+  // Position the popup next to the clicked cell
+  const rect = cell.getBoundingClientRect();
+  popup.style.top = `${rect.bottom + window.scrollY}px`;  // Ensure it accounts for page scroll
+  popup.style.left = `${rect.left + window.scrollX}px`;   // Ensure it accounts for page scroll
+  popup.style.display = "block";
+
+  // Update the current popup and cell trackers
+  currentPopup = popup;
+  currentCell = cell;
+}
 </script>
+
 </body>
 
 </html>

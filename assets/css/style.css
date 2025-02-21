@@ -178,7 +178,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 /* Comparison Table and Audit Table Styles */
-.comparison-table, .audit-table, .changelog-table  {
+.comparison-table, .changelog-table  {
   width: 100%;
   max-width: 1000px;
   margin: 20px auto;
@@ -187,7 +187,7 @@ input[type="number"]::-webkit-inner-spin-button {
   table-layout: auto;
 }
 
-.comparison-table th, .comparison-table td, .audit-table th, .audit-table td, .changelog-table th, .changelog-table td {
+.comparison-table th, .comparison-table td,  .changelog-table th, .changelog-table td {
   padding: 15px;
   text-align: left;
   border: 1px solid #ddd;
@@ -196,7 +196,7 @@ input[type="number"]::-webkit-inner-spin-button {
   white-space: normal;
 }
 
-.comparison-table th, .audit-table th, .changelog-table th {
+.comparison-table th, .changelog-table th {
   background-color: #ff5d57;
   color: white;
   font-weight: bold;
@@ -249,4 +249,51 @@ input:hover, button:hover {
 
 .margin-top {
   margin-top: 20px;
+}
+
+ .audit-table{
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  table-layout: auto;
+}
+
+.audit-table th, .audit-table td {
+  padding: 15px;
+  text-align: left;
+  border: 1px solid #ddd;
+  max-width: 300px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.audit-table th  {
+  background-color: #ff5d57;
+  color: white;
+  font-weight: bold;
+}
+
+.editable-cell {
+    cursor: pointer;
+}
+.popup {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.popup input[type="text"] {
+  width: 100%;
+  height: 100px; /* Adjust the height as needed */
+  margin-top: 5px;
+}
+
+.popup label {
+    margin-right: 10px;
 }
