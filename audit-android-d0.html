@@ -112,7 +112,6 @@
         progressBar.value = (i + 1) / campaignIds.length * 100;
       }
 
-
       /** 3. Generate Table Data from dataList */
       auditData.push({
         section: "Basic Info",
@@ -150,12 +149,10 @@
           { property: "search_result_enabled", campaigns: dataList.map(x => x.adgroupData.search_result_enabled), audit_result: {} },
           { property: "age_groups", campaigns: dataList.map(x => x.adgroupData.age_groups), audit_result: {} },
           { property: "location_ids", campaigns: dataList.map(x => x.adgroupData.location_ids), audit_result: {} },
-          { property: "excluded_custom_actions", campaigns: dataList.map(x => x.adgroupData.excluded_custom_actions), audit_result: {} },
+          { property: "excluded_custom_actions", campaigns: dataList.map(x => x.adgroupData.excluded_custom_actions), audit_result: { flag: "❌" } },
           { property: "included_custom_actions", campaigns: dataList.map(x => x.adgroupData.included_custom_actions), audit_result: {} },
           { property: "excluded_audience_ids", campaigns: dataList.map(x => x.adgroupData.excluded_audience_ids), audit_result: {} },
           { property: "interest_keyword_ids", campaigns: dataList.map(x => x.adgroupData.interest_keyword_ids), audit_result: {} },
-
-
         ]
       })
       auditData.push({
@@ -177,66 +174,23 @@
           { property: "text_number", campaigns: dataList.map(x => [...new Set(x.creativeData.map(y => y.ad_text))].length), audit_result: {} },
         ]
       })
+
+
+      // Pre-Audit, mark mismatch values with "❓"
+      auditData.forEach(section => {
+        section.properties.forEach(property => {
+          const { campaigns } = property;
+          const isUniform = campaigns.every(value => JSON.stringify(value) === JSON.stringify(campaigns[0]));
+          property.audit_result.flag = isUniform ? "" : "❓";
+        });
+      });
+
+      // Render the data in table
       generateTable(auditData);
     }
   </script>
 
-
-
   <script>
-    function mergeData(campaignData, adgroupData, creativeData, changeSummary) {
-      const merged = { ...adgroupData };
-      // Append Creative Data
-      merged['creativeData'] = creativeData
-      merged['creative_number'] = creativeData.length
-      merged['videos'] = [... new Set(creativeData.map(x => x.video_id))]
-      merged['ad_text'] = [... new Set(creativeData.map(x => x.ad_text))]
-      merged['landing_page_url'] = [... new Set(creativeData.map(x => x.landing_page_url))].sort()
-
-
-      merged['video_number'] = merged['videos'].length
-      merged['text_number'] = [... new Set(creativeData.map(x => x.ad_text))].length
-
-      merged['changesummary'] = changeSummary.summary
-      merged['changelog'] = changeSummary.records.map(x => x.activityDetails)
-
-      for (const key in campaignData) {
-        if (merged[key]) {
-          if ([
-            "location_ids",
-            "excluded_audience_ids",
-            "budget_mode",
-            "secondary_status",
-            "placements",
-            "deep_bid_type",
-          ].indexOf(key) !== -1) {
-            const valueSet = new Set([].concat(merged[key]).concat(campaignData[key]))
-            valueSet.delete(null)
-            merged[key] = [...valueSet]
-          } else if ("budget" === key) {
-            if (campaignData[key] !== 0) {
-              // merged[key] = campaignData[key]
-              merged['campaign_budget'] = campaignData[key]
-              merged['adgroup_budget'] = merged[key]
-
-            } else {
-
-            }
-            // merged[key] = `Campaign Level: ${campaignData[key]}; Adgroup Level: ${merged[key]}`;
-          }
-          else if (merged[key] === campaignData[key]) {
-            merged[key] = campaignData[key];
-          } else {
-            merged[key] = `${merged[key]}, ${campaignData[key]}`;
-          }
-        } else {
-          merged[key] = campaignData[key];
-        }
-      }
-
-      return merged;
-    }
-
     function normalizeValue(value) {
       if (value === null || value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) {
         return 'N/A';
@@ -248,10 +202,6 @@
         return JSON.stringify(value);
       }
       return value.toString();
-    }
-
-    function compareValues(value1, value2) {
-      return normalizeValue(value1) === normalizeValue(value2) || (normalizeValue(value1) === 'N/A' && normalizeValue(value2) === 'N/A');
     }
 
     function autoFillTestData(advertiserId, ...campaignIds) {
@@ -415,7 +365,6 @@
       // const changeSummary = await getChangeSummary(advertiserId, adgroupId)
 
       /** 5. Merge Data */
-      // return mergeData(campaignData, adgroupData, creativeData, changeSummary)
       return { campaignData, adgroupData, creativeData }
     }
   </script>
@@ -454,9 +403,6 @@
           row.appendChild(propertyCell);
 
           // Audit Result
-          // const auditCell = document.createElement("td");
-          // auditCell.textContent = prop.audit_result;
-          // row.appendChild(auditCell);
           const auditCell = document.createElement("td");
           auditCell.classList.add("editable-cell");
           auditCell.textContent = prop.audit_result.flag || "";
@@ -467,6 +413,12 @@
           prop.campaigns.forEach(value => {
             const campaignCell = document.createElement("td");
             campaignCell.textContent = value;
+
+            if (prop.audit_result.flag === "❓") {
+              campaignCell.style.backgroundColor = 'Lightblue';
+              // campaignCell.innerHTML = `<span class="highlight">${value}</span>`;
+            }
+
             row.appendChild(campaignCell);
           });
 
@@ -492,7 +444,6 @@
     let currentCell = null; // Track the current clicked cell
 
     function showPopup(cell) {
-
       // If the same cell is clicked again, don't do anything
       if (currentCell === cell) return;
 
@@ -545,17 +496,28 @@
         cell.setAttribute("data-input-value", inputValue); // Store the input value in the cell
         cell.setAttribute("data-audit-result", selectedValue); // Store the audit result (Pass/Fail)
 
-        // If the result is "❌", mark the row with a red background color
+
+        const row = cell.closest("tr");
+        const cells = row.querySelectorAll("td");
+
+        // Apply the background color to all cells in the row
         if (selectedValue === "❌") {
-          cell.closest("tr").style.backgroundColor = "#ffcccc"; // Mark the row red
+          cells.forEach(cell => {
+            cell.style.backgroundColor = "#ffcccc"; // Light red for "❌"
+          });
+        } else if (selectedValue === "✅") {
+          cells.forEach(cell => {
+            cell.style.backgroundColor = "lightgreen"; // Light green for "✅"
+          });
         } else {
-          cell.closest("tr").style.backgroundColor = ""; // Reset the background color if "✅"
+          cells.forEach(cell => {
+            cell.style.backgroundColor = ""; // Reset background color for other cases
+          });
         }
 
         popup.style.display = "none"; // Close the popup after saving
         currentPopup = null; // Reset the current popup tracker
         currentCell = null;  // Reset the current clicked cell tracker
-
 
         // Update auditData
         {
@@ -567,7 +529,6 @@
 
           // Locate the property 
           for (let section of auditData) {
-            console.log(`Search ${section}`)
             let property = section.properties.find(p => p.property === propertyName);
             if (property) {
               property.audit_result.flag = selectedValue

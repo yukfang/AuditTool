@@ -297,3 +297,10 @@ input:hover, button:hover {
 .popup label {
     margin-right: 10px;
 }
+
+.highlight {
+  background-color: yellow; /* Highlight color */
+  font-weight: bold;        /* Optional: Make the text bold */
+  padding: 2px 4px;         /* Optional: Add some padding */
+  border-radius: 3px;       /* Optional: Add rounded corners */
+}
