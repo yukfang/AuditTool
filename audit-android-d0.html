@@ -176,6 +176,7 @@
           { property: "ad_number", campaigns: dataList.map(x => x.creativeData.map(y => y.ad_id).length), audit_result: {} },
           { property: "video_number", campaigns: dataList.map(x => x.creativeData.map(y => y.video_id).length), audit_result: {} },
           { property: "videos", campaigns: dataList.map(x => x.creativeData.map(y => y.video_id).sort()), audit_result: {} },
+          { property: "ad_name", campaigns: dataList.map(x => x.creativeData.map(y => y.ad_name).sort()), audit_result: {} },
           { property: "ad_text", campaigns: dataList.map(x => [...new Set(x.creativeData.map(y => y.ad_text))]), audit_result: {} },
           { property: "text_number", campaigns: dataList.map(x => [...new Set(x.creativeData.map(y => y.ad_text))].length), audit_result: {} },
         ]
