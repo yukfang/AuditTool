@@ -9,7 +9,6 @@
 
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/input-section-style.css">
-  <link rel="stylesheet" href="./css/preview-style.css">
 </head>
 
 <body>
@@ -187,7 +186,7 @@
       auditData.forEach(section => {
         section.properties.forEach(property => {
           const { campaigns } = property;
-          const isUniform = campaigns.every(value => JSON.stringify(value) === JSON.stringify(campaigns[0]));
+          const isUniform = campaigns.every(value => JSON.stringify(normalizeValue(value)) === JSON.stringify(normalizeValue(campaigns[0])));
           property.audit_result.flag = isUniform ? "" : "❓";
         });
       });
