@@ -5,7 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Android D0</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/input-section-style.css">
+  <link rel="stylesheet" href="./css/preview-style.css">
 </head>
 
 <body>
@@ -21,22 +25,21 @@
       <input type="text" id="campaignId2" placeholder="Enter Campaign ID 2">
     </div>
 
-    <!-- Second Line: Sample Data buttons -->
     <div class="button-row">
-      <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818224139968577')">2
-        Campaigns</button>
-      <button
-        onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577')">3
-        Campaigns </button>
-      <button
-        onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577', '1818226692510770')">4
-        Campaigns </button>
+      <div class="left-buttons">
+        <button id="download-btn" onclick="downloadReport()">Download</button>    
+      </div>
+      <div class="right-buttons">
+        <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818224139968577')">2 Campaigns</button>
+        <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577')">3 Campaigns</button>
+        <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577', '1818226692510770')">4 Campaigns</button>
+      </div>
     </div>
 
     <progress id="progressBar" value="0" max="100"></progress>
   </div>
 
-  <h2 class="collapsible active">Audit Results - Click to Fold</h2>
+    <h2 class="collapsible active">Audit Results - Click to Fold</h2>
   <div class="content" style="display: block;">
     <table class="audit-table" id="auditTable">
       <thead>
@@ -95,6 +98,9 @@
     progressBar.value = 0;
 
     async function audit() {
+      /** Hide Download Button*/
+      document.getElementById("download-btn").style.display = "none";
+
       /** 0. Clear Table */
       clearTable()
 
@@ -113,6 +119,7 @@
       }
 
       /** 3. Generate Table Data from dataList */
+      auditData = []; // always reset the audit table 
       auditData.push({
         section: "Basic Info",
         properties: [
@@ -187,6 +194,9 @@
 
       // Render the data in table
       generateTable(auditData);
+
+      // show [Preview] Button
+      document.getElementById("download-btn").style.display = "block";
     }
   </script>
 
@@ -427,6 +437,134 @@
       });
     }
 
+      // The sample report data is like
+  // [{"property":"is_smart_performance_campaign","audit_result":"Action Item:\nMake sure all campaigns are S+\n\n\n---Current Status---\n[1818226348743778]: false\n[1818224139968577]: true"},{"property":"adgroup_budget","audit_result":"Action Item:\nMake sure the budget is same \n\n---Current Status---\n[1818226348743778]: 953.88\n[1818224139968577]: 0"}]
+  
+  
+
+
+  
+  function downloadReport() {
+  // Sample audit data (Replace this with your actual `auditData`)
+  const reportData = auditData.flatMap(section =>
+    section.properties
+      .filter(property => property.audit_result.flag === "❌")
+      .map(property => ({
+        property: property.property,
+        audit_result: property.audit_result.comments
+      }))
+  );
+  console.log(JSON.stringify(reportData));
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Constants for pagination
+  const pageHeight = doc.internal.pageSize.height; // Height of the page
+  const margin = 20; // Margin for content
+  let yOffset = margin; // Start content below the header
+
+  // Function to add a new page
+  const addNewPage = () => {
+    doc.addPage();
+    yOffset = margin; // Reset yOffset for the new page
+  };
+
+  // Header Styling (Bright and modern)
+  doc.setFillColor(100, 149, 237); // Cornflower blue (bright and pleasant)
+  doc.rect(0, 0, 210, 50, "F"); // Draw a filled rectangle for the header
+
+  // Add Title
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(24);
+  doc.setTextColor(255, 255, 255); // White text for the title
+  doc.text("Android D0 Test - Campaign Audit Report", margin, 30);
+
+  // Add Auditor Name (Aligned to the right)
+  doc.setFontSize(12);
+  doc.text(`Audit By : Lynn Seo`, 190, 40, { align: "right" }); // Aligned to the right
+
+  // Add Audit Time (Aligned to the right)
+  const auditTime = new Date().toISOString().replace("T", " ").slice(0, 16); // Format: YYYY-MM-DD HH:mm
+  doc.text(`Audit Time(UTC) : ${auditTime}`, 190, 45, { align: "right" }); // Aligned to the right
+
+  // Add a horizontal line below the header
+  doc.setDrawColor(255, 255, 255); // White line
+  doc.setLineWidth(0.5);
+  doc.line(margin, 55, 190, 55); // Line from x=20 to x=190, at y=55
+
+  // Add Summary Section
+  yOffset = 65; // Start content below the header
+
+  // Summary Box Styling
+  doc.setFillColor(240, 240, 240); // Light gray background for the summary box
+  doc.rect(margin, yOffset, 170, 40, "F"); // Draw a filled rectangle for the summary box
+
+  // Summary Title
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(100, 149, 237); // Cornflower blue for the title
+  doc.text("Summary", margin + 5, yOffset + 10);
+
+  // Summary Content
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0); // Black text for the content
+  const summaryText = `There are a total of ${reportData.length} items that need attention. 
+Please check the following details and correct them based on the Action Items. 
+Contact your CSM if you have any questions.`;
+  const splitSummary = doc.splitTextToSize(summaryText, 160); // Split text to fit within the box
+  doc.text(splitSummary, margin + 5, yOffset + 20);
+
+  yOffset += 50; // Adjust yOffset for the next section
+
+  // Start formatting the data
+  reportData.forEach((item, index) => {
+    // Calculate the height of the current content
+    const propertyText = `${index + 1}. ${item.property}`;
+    const auditResultText = doc.splitTextToSize(item.audit_result, 170);
+    const contentHeight = 8 + (auditResultText.length * 8) + 20; // 8 for property, 8 per line for audit result, 20 for spacing
+
+    // Check if the content exceeds the page height
+    if (yOffset + contentHeight > pageHeight - margin) {
+      addNewPage(); // Add a new page if the content exceeds the page height
+    }
+
+    // Add property name as a bold header
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(100, 149, 237); // Cornflower blue for the property name
+    doc.text(propertyText, margin, yOffset);
+
+    // Add the audit result below the property name
+    yOffset += 8;
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0); // Black text for the audit result
+    doc.text(auditResultText, margin, yOffset);
+
+    // Calculate the new yOffset based on the number of lines
+    yOffset += auditResultText.length * 8 + 10; // Adjust spacing based on the number of lines
+
+    // Add a separation line after each property
+    doc.setDrawColor(200, 200, 200); // Light gray color for the separation line
+    doc.setLineWidth(0.2);
+    doc.line(margin, yOffset, 190, yOffset); // Line from x=20 to x=190, at the current yOffset
+
+    // Add extra space after the separation line
+    yOffset += 10;
+  });
+
+  // Add a footer
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100); // Gray color for the footer
+  doc.text("Generated by MPO-TSC Audit Tool", margin, pageHeight - 10);
+  doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, pageHeight - 10, { align: "right" });
+
+  // Save the file as a PDF
+  doc.save("audit_report.pdf");
+}
+
+
+
     function clearTable() {
       const auditBody = document.getElementById("auditBody");
       auditBody.innerHTML = '';
@@ -611,7 +749,7 @@
 
           // Format the input value with campaign IDs and values dynamically
           const propertyName = rowCells[1 + (rowCells.length - headerCells.length)].textContent.trim(); // Extract the property name from the 2nd column
-          const defaultText = `Action Item:\n\n\n---Current Status---\n` +
+          const defaultText = `Action Item:\n\n\n---Current Configuration---\n` +
             campaignIDs.map((id, idx) => `[${id}]: ${campaignValues[idx]}`).join("\n");
 
           input.value = defaultText; // Set the dynamic text in the input field
@@ -631,6 +769,7 @@
       currentPopup = popup;
       currentCell = cell;
     }
+
 
   </script>
 
