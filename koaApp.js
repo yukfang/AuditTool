@@ -93,6 +93,7 @@ router.get('/s\\+app',         (ctx, next) =>{ ctx.body = fs.readFileSync('audit
 router.get('/s\\+traffic',     (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+traffic.html',          {encoding:'utf8', flag:'r'});})
 router.get('/s\\+lead',        (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+lead.html',             {encoding:'utf8', flag:'r'});})
 router.get('/android-d0',      (ctx, next) =>{ ctx.body = fs.readFileSync('audit-android-d0.html',         {encoding:'utf8', flag:'r'});})
+router.get('/s\\+cc',          (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+cc.html',               {encoding:'utf8', flag:'r'});})
 
 
 
