@@ -196,11 +196,13 @@
           {
             property: "videos_diff", campaigns: dataList.map(campaignData => {
               // Get all video IDs across all campaigns
-              const allVideoIds = dataList.flatMap(c => c.creativeData.map(y => y.video_id));
+              const allVideoIds = dataList.map(c => c.creativeData.map(y => y.video_id).sort());
+              console.log(`allVideoIds: ${allVideoIds}`)
               // Get the current campaign's video IDs
-              const currentVideoIds = campaignData.creativeData.map(y => y.video_id);
+              const currentVideoIds = campaignData.creativeData.map(y => y.video_id).sort();
               // Find the intersection of all video IDs
-              const commonVideoIds = Array.from(new Set(allVideoIds.filter((id, index) => allVideoIds.indexOf(id) !== index)));
+              const commonVideoIds = currentVideoIds.filter(id => allVideoIds.every(videoIds => videoIds.includes(id)));
+              console.log( `commonVideoIds: ${commonVideoIds}`)
               // Remove common video IDs from the current campaign's video IDs
               return currentVideoIds.filter(id => !commonVideoIds.includes(id)).sort();
             }), audit_result: {}
