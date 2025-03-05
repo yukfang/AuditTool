@@ -51,6 +51,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .button-row {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
@@ -67,11 +68,19 @@ input[type="number"]::-webkit-inner-spin-button {
   }
   
   .button-row button {
-    padding: 8px 15px;
+    padding: 8px 10px;
     font-size: 14px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+
+    flex: 1 1 6%; /* Each button takes up 10% of the container's width */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+    margin: 5px; /* Optional: Add some margin between buttons */
+
+    height: 50px;
+    width: 100px;
+    box-sizing: border-box; 
   }
   
   /* Preview button styles */
@@ -98,3 +107,6 @@ input[type="number"]::-webkit-inner-spin-button {
     background-color: #ff5d57;
   }
   
+
+
+
