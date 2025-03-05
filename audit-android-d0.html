@@ -16,12 +16,14 @@
   <div class="input-container">
     <!-- First Line: Audit button and inputs -->
     <div class="input-row" id="inputRow">
+
       <button onclick="audit()">Audit</button>
       <button onclick="addInputSlot()">+</button>
       <button onclick="removeInputSlot()">-</button>
       <input type="text" id="advertiserId" placeholder="Enter Advertiser ID">
       <input type="text" id="campaignId1" placeholder="Enter Campaign ID 1">
       <input type="text" id="campaignId2" placeholder="Enter Campaign ID 2">
+      <button id="load-ids-btn">Load IDs</button>
     </div>
 
     <div class="button-row">
@@ -29,7 +31,7 @@
         <button id="download-btn" onclick="downloadReport()">Download</button>
       </div>
       <div class="right-buttons">
-        <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818224139968577')">2
+        <!-- <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818224139968577')">2
           Campaigns</button>
         <button onclick="autoFillTestData('6902039705945112577', '1825212479048801', '1825213920739362')">
           Campaigns</button>
@@ -41,7 +43,7 @@
           Campaigns</button>
         <button
           onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577', '1818226692510770')">4
-          Campaigns</button>
+          Campaigns</button> -->
       </div>
     </div>
 
@@ -257,6 +259,25 @@
       });
     }
 
+
+function restoreIdInformation() {
+  const idData = localStorage.getItem('idData');
+  if (idData) {
+    const parsedData = JSON.parse(idData);
+    const rightButtons = document.querySelector('.right-buttons');
+    rightButtons.innerHTML = ''; // Clear previous buttons
+
+    parsedData.forEach(({ clientName, ids }) => {
+      const button = document.createElement('button');
+      button.textContent = `${clientName} (${ids.length - 1})`;
+      button.onclick = () => autoFillTestData(ids[0], ...ids.slice(1));
+      rightButtons.appendChild(button);
+    });
+  }
+}
+
+    document.addEventListener("DOMContentLoaded", restoreIdInformation);
+    
     document.addEventListener("DOMContentLoaded", function () {
       var coll = document.getElementsByClassName("collapsible");
       for (var i = 0; i < coll.length; i++) {
@@ -469,8 +490,43 @@
 
     // The sample report data is like
     // [{"property":"is_smart_performance_campaign","audit_result":"Action Item:\nMake sure all campaigns are S+\n\n\n---Current Status---\n[1818226348743778]: false\n[1818224139968577]: true"},{"property":"adgroup_budget","audit_result":"Action Item:\nMake sure the budget is same \n\n---Current Status---\n[1818226348743778]: 953.88\n[1818224139968577]: 0"}]
+    const loadIdsButton = document.getElementById('load-ids-btn');
+loadIdsButton.addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.txt';
+  input.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        const rightButtons = document.querySelector('.right-buttons');
+        rightButtons.innerHTML = ''; // Clear previous buttons
 
+        const idData = []; // Array to store ID data
+        lines.forEach((line) => {
+          const values = line.replace(/'/g, '').split(',').map((value) => value.trim());
+          if(values.length < 3) return;
+          const clientName = values[0];
+          const ids = values.slice(1);
+          const button = document.createElement('button');
+          button.textContent = `${clientName} (${ids.length - 1})`;
+          button.onclick = () => autoFillTestData(ids[0], ...ids.slice(1));
+          rightButtons.appendChild(button);
 
+          idData.push({ clientName, ids }); // Store ID data
+        });
+
+        // Save ID data to local storage
+        localStorage.setItem('idData', JSON.stringify(idData));
+      };
+      reader.readAsText(file);
+    }
+  });
+  input.click();
+});
 
 
 
