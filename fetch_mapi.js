@@ -21,6 +21,11 @@ async function getChangeSummary(advertiserId, adgroupId) {
     }
 }
 
+async function fetchAdvertiserData(advertiserId) {
+    console.log(`fetchAdvertiserData`)
+    return await fetchData('/open_api/v1.3/advertiser/info/', advertiserId, null, null);
+}
+
 async function fetchCampaignData(advertiserId, campaignId) {
     console.log(`fetchCampaignData`)
     return await fetchData('/open_api/v1.3/campaign/get/', advertiserId, campaignId, null);

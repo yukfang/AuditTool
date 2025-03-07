@@ -8,6 +8,7 @@ const bodyParser    = require('koa-bodyparser');
 const koaApp = new Koa();
 const router = new Router();
 
+const adv_info_get     = require('./router/mapi/advertiser_get')
 const ad_get           = require('./router/mapi/ad_get')
 const adgroup_get      = require('./router/mapi/adgroup_get')
 const campaign_get     = require('./router/mapi/campaign_get')
@@ -48,6 +49,10 @@ koaApp.use(async (ctx, next) => {
     const { advertiser_id, filtering } = ctx.request.body;
     const ad_data = await ad_get(advertiser_id, filtering)
     ctx.body = ad_data
+  } else if(ctx.path === '/open_api/v1.3/advertiser/info/') {
+    const { advertiser_id } = ctx.request.body;
+    const adv_data = await adv_info_get(advertiser_id)
+    ctx.body = adv_data
   } else if(ctx.path === '/open_api/v1.3/adgroup/get/') {
     const { advertiser_id, filtering } = ctx.request.body;
     console.log(`filter = ${JSON.stringify(filtering)}`)

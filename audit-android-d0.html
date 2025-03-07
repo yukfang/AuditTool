@@ -149,6 +149,7 @@
       auditData.push({
         section: "Bidding",
         properties: [
+          { property: "currency", campaigns: dataList.map(x => x.advertiserData.currency), audit_result: {} },
           { property: "campaign_budget", campaigns: dataList.map(x => x.campaignData.budget), audit_result: {} },
           { property: "adgroup_budget", campaigns: dataList.map(x => x.adgroupData.budget), audit_result: {} },
           { property: "billing_event", campaigns: dataList.map(x => x.adgroupData.billing_event), audit_result: {} },
@@ -172,7 +173,7 @@
               const name = getLocationNameById(id)
               console.log(`id: ${id}, ${typeof(id)}`)
               if (name) {
-                return name
+                return `${id}(${name})`
               } else {
                 return id
               }
@@ -416,6 +417,9 @@ function restoreIdInformation() {
   <script>
     /** Data Pulling Flow */
     async function fetchAndMergeData(advertiserId, campaignId, progressBar) {
+      /** 0. Fetch Adv Info */
+      const advertiserData = await fetchAdvertiserData(advertiserId);
+
       /** 1. Fetch Campaign Data */
       console.log('Fetching data for campaign', campaignId);
       let campaignData = await fetchCampaignData(advertiserId, campaignId);
@@ -431,12 +435,11 @@ function restoreIdInformation() {
       /** 3. Fetch AD DATA */
       const creativeData = await getCreativeDataByCampaignId(advertiserId, campaignId);
 
-
       /** 4. Fetch Change Log*/
       // const changeSummary = await getChangeSummary(advertiserId, adgroupId)
 
       /** 5. Merge Data */
-      return { campaignData, adgroupData, creativeData }
+      return { campaignData, adgroupData, creativeData, advertiserData }
     }
   </script>
 
