@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Android D0</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="location_ids.js"></script>
+
 
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/input-section-style.css">
@@ -166,7 +168,15 @@
           { property: "placements", campaigns: dataList.map(x => x.adgroupData.placements), audit_result: {} },
           { property: "search_result_enabled", campaigns: dataList.map(x => x.adgroupData.search_result_enabled), audit_result: {} },
           { property: "age_groups", campaigns: dataList.map(x => x.adgroupData.age_groups), audit_result: {} },
-          { property: "location_ids", campaigns: dataList.map(x => x.adgroupData.location_ids), audit_result: {} },
+          { property: "location_ids", campaigns: dataList.map(x => x.adgroupData.location_ids.map(id => {
+              const name = getLocationNameById(id)
+              console.log(`id: ${id}, ${typeof(id)}`)
+              if (name) {
+                return name
+              } else {
+                return id
+              }
+            })), audit_result: {} },
           { property: "excluded_custom_actions", campaigns: dataList.map(x => x.adgroupData.excluded_custom_actions), audit_result: { flag: "❌" } },
           { property: "included_custom_actions", campaigns: dataList.map(x => x.adgroupData.included_custom_actions), audit_result: {} },
           { property: "excluded_audience_ids", campaigns: dataList.map(x => x.adgroupData.excluded_audience_ids), audit_result: {} },

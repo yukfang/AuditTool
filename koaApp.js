@@ -96,7 +96,9 @@ router.get('/android-d0',      (ctx, next) =>{ ctx.body = fs.readFileSync('audit
 router.get('/s\\+cc',          (ctx, next) =>{ ctx.body = fs.readFileSync('audit-s+cc.html',               {encoding:'utf8', flag:'r'});})
 
 
-
+router.get('/location_ids.js', (ctx, next) =>{
+  ctx.body = fs.readFileSync('location_ids.js', {encoding:'utf8', flag:'r'});
+})
 router.get('/fetch_mapi.js', (ctx, next) =>{
   ctx.body = fs.readFileSync('fetch_mapi.js', {encoding:'utf8', flag:'r'});
 })
