@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>S+ CC</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="location_ids.js"></script>
+
 
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/input-section-style.css">
@@ -16,29 +18,41 @@
   <div class="input-container">
     <!-- First Line: Audit button and inputs -->
     <div class="input-row" id="inputRow">
+
       <button onclick="audit()">Audit</button>
       <button onclick="addInputSlot()">+</button>
       <button onclick="removeInputSlot()">-</button>
       <input type="text" id="advertiserId" placeholder="Enter Advertiser ID">
       <input type="text" id="campaignId1" placeholder="Enter Campaign ID 1">
       <input type="text" id="campaignId2" placeholder="Enter Campaign ID 2">
+      <button id="load-ids-btn">Load IDs</button>
     </div>
 
     <div class="button-row">
       <div class="left-buttons">
-        <button id="download-btn" onclick="downloadReport()">Download</button>    
+        <button id="download-btn" onclick="downloadReport()">Download</button>
       </div>
       <div class="right-buttons">
-        <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818224139968577')">2 Campaigns</button>
-        <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577')">3 Campaigns</button>
-        <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577', '1818226692510770')">4 Campaigns</button>
+        <!-- <button onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818224139968577')">2
+          Campaigns</button>
+        <button onclick="autoFillTestData('6902039705945112577', '1825212479048801', '1825213920739362')">
+          Campaigns</button>
+        <button
+          onclick="autoFillTestData('6902039705945112577', '1825212479048801', '1825591825235058', '1825213920739362')">3
+          Campaigns</button>
+        <button
+          onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577')">3
+          Campaigns</button>
+        <button
+          onclick="autoFillTestData('7116340291921002498', '1818226348743778', '1818226692510770', '1818224139968577', '1818226692510770')">4
+          Campaigns</button> -->
       </div>
     </div>
 
     <progress id="progressBar" value="0" max="100"></progress>
   </div>
 
-    <h2 class="collapsible active">Audit Results - Click to Fold</h2>
+  <h2 class="collapsible active">Audit Results - Click to Fold</h2>
   <div class="content" style="display: block;">
     <table class="audit-table" id="auditTable">
       <thead>
@@ -135,6 +149,7 @@
       auditData.push({
         section: "Bidding",
         properties: [
+          { property: "currency", campaigns: dataList.map(x => x.advertiserData.currency), audit_result: {} },
           { property: "campaign_budget", campaigns: dataList.map(x => x.campaignData.budget), audit_result: {} },
           { property: "adgroup_budget", campaigns: dataList.map(x => x.adgroupData.budget), audit_result: {} },
           { property: "billing_event", campaigns: dataList.map(x => x.adgroupData.billing_event), audit_result: {} },
@@ -154,7 +169,15 @@
           { property: "placements", campaigns: dataList.map(x => x.adgroupData.placements), audit_result: {} },
           { property: "search_result_enabled", campaigns: dataList.map(x => x.adgroupData.search_result_enabled), audit_result: {} },
           { property: "age_groups", campaigns: dataList.map(x => x.adgroupData.age_groups), audit_result: {} },
-          { property: "location_ids", campaigns: dataList.map(x => x.adgroupData.location_ids), audit_result: {} },
+          { property: "location_ids", campaigns: dataList.map(x => x.adgroupData.location_ids.map(id => {
+              const name = getLocationNameById(id)
+              console.log(`id: ${id}, ${typeof(id)}`)
+              if (name) {
+                return `${id}(${name})`
+              } else {
+                return id
+              }
+            })), audit_result: {} },
           { property: "excluded_custom_actions", campaigns: dataList.map(x => x.adgroupData.excluded_custom_actions), audit_result: { flag: "❌" } },
           { property: "included_custom_actions", campaigns: dataList.map(x => x.adgroupData.included_custom_actions), audit_result: {} },
           { property: "excluded_audience_ids", campaigns: dataList.map(x => x.adgroupData.excluded_audience_ids), audit_result: {} },
@@ -176,12 +199,32 @@
           { property: "ad_number", campaigns: dataList.map(x => x.creativeData.map(y => y.ad_id).length), audit_result: {} },
           { property: "video_number", campaigns: dataList.map(x => x.creativeData.map(y => y.video_id).length), audit_result: {} },
           { property: "videos", campaigns: dataList.map(x => x.creativeData.map(y => y.video_id).sort()), audit_result: {} },
+          {
+            property: "videos_same", campaigns: dataList.map(campaignData => {
+              const allVideoIds = dataList.map(c => c.creativeData.map(y => y.video_id).sort());
+              const currentVideoIds = campaignData.creativeData.map(y => y.video_id).sort();
+              return currentVideoIds.filter(id => allVideoIds.every(videoIds => videoIds.includes(id)));
+            }), audit_result: {}
+          },
+          {
+            property: "videos_diff", campaigns: dataList.map(campaignData => {
+              // Get all video IDs across all campaigns
+              const allVideoIds = dataList.map(c => c.creativeData.map(y => y.video_id).sort());
+              console.log(`allVideoIds: ${allVideoIds}`)
+              // Get the current campaign's video IDs
+              const currentVideoIds = campaignData.creativeData.map(y => y.video_id).sort();
+              // Find the intersection of all video IDs
+              const commonVideoIds = currentVideoIds.filter(id => allVideoIds.every(videoIds => videoIds.includes(id)));
+              console.log( `commonVideoIds: ${commonVideoIds}`)
+              // Remove common video IDs from the current campaign's video IDs
+              return currentVideoIds.filter(id => !commonVideoIds.includes(id)).sort();
+            }), audit_result: {}
+          },
           { property: "ad_name", campaigns: dataList.map(x => x.creativeData.map(y => y.ad_name).sort()), audit_result: {} },
           { property: "ad_text", campaigns: dataList.map(x => [...new Set(x.creativeData.map(y => y.ad_text))]), audit_result: {} },
           { property: "text_number", campaigns: dataList.map(x => [...new Set(x.creativeData.map(y => y.ad_text))].length), audit_result: {} },
         ]
       })
-
 
       // Pre-Audit, mark mismatch values with "❓"
       auditData.forEach(section => {
@@ -227,6 +270,25 @@
       });
     }
 
+
+function restoreIdInformation() {
+  const idData = localStorage.getItem('idData');
+  if (idData) {
+    const parsedData = JSON.parse(idData);
+    const rightButtons = document.querySelector('.right-buttons');
+    rightButtons.innerHTML = ''; // Clear previous buttons
+
+    parsedData.forEach(({ clientName, ids }) => {
+      const button = document.createElement('button');
+      button.textContent = `${clientName} (${ids.length - 1})`;
+      button.onclick = () => autoFillTestData(ids[0], ...ids.slice(1));
+      rightButtons.appendChild(button);
+    });
+  }
+}
+
+    document.addEventListener("DOMContentLoaded", restoreIdInformation);
+    
     document.addEventListener("DOMContentLoaded", function () {
       var coll = document.getElementsByClassName("collapsible");
       for (var i = 0; i < coll.length; i++) {
@@ -355,6 +417,9 @@
   <script>
     /** Data Pulling Flow */
     async function fetchAndMergeData(advertiserId, campaignId, progressBar) {
+      /** 0. Fetch Adv Info */
+      const advertiserData = await fetchAdvertiserData(advertiserId);
+
       /** 1. Fetch Campaign Data */
       console.log('Fetching data for campaign', campaignId);
       let campaignData = await fetchCampaignData(advertiserId, campaignId);
@@ -370,12 +435,11 @@
       /** 3. Fetch AD DATA */
       const creativeData = await getCreativeDataByCampaignId(advertiserId, campaignId);
 
-
       /** 4. Fetch Change Log*/
       // const changeSummary = await getChangeSummary(advertiserId, adgroupId)
 
       /** 5. Merge Data */
-      return { campaignData, adgroupData, creativeData }
+      return { campaignData, adgroupData, creativeData, advertiserData }
     }
   </script>
 
@@ -437,131 +501,166 @@
       });
     }
 
-      // The sample report data is like
-  // [{"property":"is_smart_performance_campaign","audit_result":"Action Item:\nMake sure all campaigns are S+\n\n\n---Current Status---\n[1818226348743778]: false\n[1818224139968577]: true"},{"property":"adgroup_budget","audit_result":"Action Item:\nMake sure the budget is same \n\n---Current Status---\n[1818226348743778]: 953.88\n[1818224139968577]: 0"}]
-  
-  
+    // The sample report data is like
+    // [{"property":"is_smart_performance_campaign","audit_result":"Action Item:\nMake sure all campaigns are S+\n\n\n---Current Status---\n[1818226348743778]: false\n[1818224139968577]: true"},{"property":"adgroup_budget","audit_result":"Action Item:\nMake sure the budget is same \n\n---Current Status---\n[1818226348743778]: 953.88\n[1818224139968577]: 0"}]
+    const loadIdsButton = document.getElementById('load-ids-btn');
+loadIdsButton.addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.txt';
+  input.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        const rightButtons = document.querySelector('.right-buttons');
+        rightButtons.innerHTML = ''; // Clear previous buttons
+
+        const idData = []; // Array to store ID data
+        lines.forEach((line) => {
+          const values = line.replace(/'/g, '').split(',').map((value) => value.trim());
+          if(values.length < 3) return;
+          const clientName = values[0];
+          const ids = values.slice(1);
+          const button = document.createElement('button');
+          button.textContent = `${clientName} (${ids.length - 1})`;
+          button.onclick = () => autoFillTestData(ids[0], ...ids.slice(1));
+          rightButtons.appendChild(button);
+
+          idData.push({ clientName, ids }); // Store ID data
+        });
+
+        // Save ID data to local storage
+        localStorage.setItem('idData', JSON.stringify(idData));
+      };
+      reader.readAsText(file);
+    }
+  });
+  input.click();
+});
 
 
-  
-  function downloadReport() {
-  // Sample audit data (Replace this with your actual `auditData`)
-  const reportData = auditData.flatMap(section =>
-    section.properties
-      .filter(property => property.audit_result.flag === "❌")
-      .map(property => ({
-        property: property.property,
-        audit_result: property.audit_result.comments
-      }))
-  );
-  console.log(JSON.stringify(reportData));
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+    function downloadReport() {
+      // Sample audit data (Replace this with your actual `auditData`)
+      const reportData = auditData.flatMap(section =>
+        section.properties
+          .filter(property => property.audit_result.flag === "❌")
+          .map(property => ({
+            property: property.property,
+            audit_result: property.audit_result.comments
+          }))
+      );
+      console.log(JSON.stringify(reportData));
 
-  // Constants for pagination
-  const pageHeight = doc.internal.pageSize.height; // Height of the page
-  const margin = 20; // Margin for content
-  let yOffset = margin; // Start content below the header
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-  // Function to add a new page
-  const addNewPage = () => {
-    doc.addPage();
-    yOffset = margin; // Reset yOffset for the new page
-  };
+      // Constants for pagination
+      const pageHeight = doc.internal.pageSize.height; // Height of the page
+      const margin = 20; // Margin for content
+      let yOffset = margin; // Start content below the header
 
-  // Header Styling (Bright and modern)
-  doc.setFillColor(100, 149, 237); // Cornflower blue (bright and pleasant)
-  doc.rect(0, 0, 210, 50, "F"); // Draw a filled rectangle for the header
+      // Function to add a new page
+      const addNewPage = () => {
+        doc.addPage();
+        yOffset = margin; // Reset yOffset for the new page
+      };
 
-  // Add Title
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(24);
-  doc.setTextColor(255, 255, 255); // White text for the title
-  doc.text("Android D0 Test - Campaign Audit Report", margin, 30);
+      // Header Styling (Bright and modern)
+      doc.setFillColor(100, 149, 237); // Cornflower blue (bright and pleasant)
+      doc.rect(0, 0, 210, 50, "F"); // Draw a filled rectangle for the header
 
-  // Add Auditor Name (Aligned to the right)
-  doc.setFontSize(12);
-  doc.text(`Audit By : Lynn Seo`, 190, 40, { align: "right" }); // Aligned to the right
+      // Add Title
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(24);
+      doc.setTextColor(255, 255, 255); // White text for the title
+      doc.text("Smart+ CC Test - Campaign Audit Report", margin, 30);
 
-  // Add Audit Time (Aligned to the right)
-  const auditTime = new Date().toISOString().replace("T", " ").slice(0, 16); // Format: YYYY-MM-DD HH:mm
-  doc.text(`Audit Time(UTC) : ${auditTime}`, 190, 45, { align: "right" }); // Aligned to the right
+      // Add Auditor Name (Aligned to the right)
+      doc.setFontSize(12);
+      doc.text(`Audit By : Anna Wang`, 190, 40, { align: "right" }); // Aligned to the right
 
-  // Add a horizontal line below the header
-  doc.setDrawColor(255, 255, 255); // White line
-  doc.setLineWidth(0.5);
-  doc.line(margin, 55, 190, 55); // Line from x=20 to x=190, at y=55
+      // Add Audit Time (Aligned to the right)
+      const auditTime = new Date().toISOString().replace("T", " ").slice(0, 16); // Format: YYYY-MM-DD HH:mm
+      doc.text(`Audit Time(UTC) : ${auditTime}`, 190, 45, { align: "right" }); // Aligned to the right
 
-  // Add Summary Section
-  yOffset = 65; // Start content below the header
+      // Add a horizontal line below the header
+      doc.setDrawColor(255, 255, 255); // White line
+      doc.setLineWidth(0.5);
+      doc.line(margin, 55, 190, 55); // Line from x=20 to x=190, at y=55
 
-  // Summary Box Styling
-  doc.setFillColor(240, 240, 240); // Light gray background for the summary box
-  doc.rect(margin, yOffset, 170, 40, "F"); // Draw a filled rectangle for the summary box
+      // Add Summary Section
+      yOffset = 65; // Start content below the header
 
-  // Summary Title
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(100, 149, 237); // Cornflower blue for the title
-  doc.text("Summary", margin + 5, yOffset + 10);
+      // Summary Box Styling
+      doc.setFillColor(240, 240, 240); // Light gray background for the summary box
+      doc.rect(margin, yOffset, 170, 40, "F"); // Draw a filled rectangle for the summary box
 
-  // Summary Content
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
-  doc.setTextColor(0, 0, 0); // Black text for the content
-  const summaryText = `There are a total of ${reportData.length} items that need attention. 
+      // Summary Title
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(100, 149, 237); // Cornflower blue for the title
+      doc.text("Summary", margin + 5, yOffset + 10);
+
+      // Summary Content
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0); // Black text for the content
+      const summaryText = `There are a total of ${reportData.length} items that need attention. 
 Please check the following details and correct them based on the Action Items. 
 Contact your CSM if you have any questions.`;
-  const splitSummary = doc.splitTextToSize(summaryText, 160); // Split text to fit within the box
-  doc.text(splitSummary, margin + 5, yOffset + 20);
+      const splitSummary = doc.splitTextToSize(summaryText, 160); // Split text to fit within the box
+      doc.text(splitSummary, margin + 5, yOffset + 20);
 
-  yOffset += 50; // Adjust yOffset for the next section
+      yOffset += 50; // Adjust yOffset for the next section
 
-  // Start formatting the data
-  reportData.forEach((item, index) => {
-    // Calculate the height of the current content
-    const propertyText = `${index + 1}. ${item.property}`;
-    const auditResultText = doc.splitTextToSize(item.audit_result, 170);
-    const contentHeight = 8 + (auditResultText.length * 8) + 20; // 8 for property, 8 per line for audit result, 20 for spacing
+      // Start formatting the data
+      reportData.forEach((item, index) => {
+        // Calculate the height of the current content
+        const propertyText = `${index + 1}. ${item.property}`;
+        const auditResultText = doc.splitTextToSize(item.audit_result, 170);
+        const contentHeight = 8 + (auditResultText.length * 8) + 20; // 8 for property, 8 per line for audit result, 20 for spacing
 
-    // Check if the content exceeds the page height
-    if (yOffset + contentHeight > pageHeight - margin) {
-      addNewPage(); // Add a new page if the content exceeds the page height
+        // Check if the content exceeds the page height
+        if (yOffset + contentHeight > pageHeight - margin) {
+          addNewPage(); // Add a new page if the content exceeds the page height
+        }
+
+        // Add property name as a bold header
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(100, 149, 237); // Cornflower blue for the property name
+        doc.text(propertyText, margin, yOffset);
+
+        // Add the audit result below the property name
+        yOffset += 8;
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0); // Black text for the audit result
+        doc.text(auditResultText, margin, yOffset);
+
+        // Calculate the new yOffset based on the number of lines
+        yOffset += auditResultText.length * 8 + 10; // Adjust spacing based on the number of lines
+
+        // Add a separation line after each property
+        doc.setDrawColor(200, 200, 200); // Light gray color for the separation line
+        doc.setLineWidth(0.2);
+        doc.line(margin, yOffset, 190, yOffset); // Line from x=20 to x=190, at the current yOffset
+
+        // Add extra space after the separation line
+        yOffset += 10;
+      });
+
+      // Add a footer
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100); // Gray color for the footer
+      doc.text("Generated by MPO-TSC Audit Tool", margin, pageHeight - 10);
+      doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, pageHeight - 10, { align: "right" });
+
+      // Save the file as a PDF
+      doc.save("audit_report.pdf");
     }
-
-    // Add property name as a bold header
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(100, 149, 237); // Cornflower blue for the property name
-    doc.text(propertyText, margin, yOffset);
-
-    // Add the audit result below the property name
-    yOffset += 8;
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0); // Black text for the audit result
-    doc.text(auditResultText, margin, yOffset);
-
-    // Calculate the new yOffset based on the number of lines
-    yOffset += auditResultText.length * 8 + 10; // Adjust spacing based on the number of lines
-
-    // Add a separation line after each property
-    doc.setDrawColor(200, 200, 200); // Light gray color for the separation line
-    doc.setLineWidth(0.2);
-    doc.line(margin, yOffset, 190, yOffset); // Line from x=20 to x=190, at the current yOffset
-
-    // Add extra space after the separation line
-    yOffset += 10;
-  });
-
-  // Add a footer
-  doc.setFontSize(10);
-  doc.setTextColor(100, 100, 100); // Gray color for the footer
-  doc.text("Generated by MPO-TSC Audit Tool", margin, pageHeight - 10);
-  doc.text(`Page ${doc.internal.getNumberOfPages()}`, 190, pageHeight - 10, { align: "right" });
-
-  // Save the file as a PDF
-  doc.save("audit_report.pdf");
-}
 
 
 
