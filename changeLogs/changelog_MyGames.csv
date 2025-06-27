@@ -1,0 +1,15 @@
+Summary of Changes
+Budget changes,1
+Bid changes,0
+Status changes,6
+
+Records
+Time,Object Type,Object ID,Object Name,Operator,Source,App ID,Activity Details
+2025-03-14 09:24,Ad group,T1825991191000065,Budget & Schedule,g************v@my.games,Desktop,--,"2025-03-14 09:24: Budget changed from b'1,000.00 USD' to b'700.00 USD'"
+2025-03-14 09:23,Ad group,T1825991191000065,Bidding & Optimization,g************v@my.games,Desktop,--,"2025-03-14 09:23: minimum ROAS changed from b'0.40' to b'0.32'"
+2025-03-11 07:24,Campaign,T1825944503811122,On/Off Status,a***************v@my.games,Desktop,--,"2025-03-11 07:24: Campaign changed from Paused to Enabled"
+2025-03-11 07:24,Ad group,T1825944503813122,On/Off Status,a***************v@my.games,Desktop,--,"2025-03-11 07:24: Campaign changed from Paused to Enabled"
+2025-03-11 07:24,Campaign,T1825944580545570,On/Off Status,a***************v@my.games,Desktop,--,"2025-03-11 07:24: Campaign changed from Paused to Enabled"
+2025-03-11 07:24,Ad group,T1825944581937329,On/Off Status,a***************v@my.games,Desktop,--,"2025-03-11 07:24: Campaign changed from Paused to Enabled"
+2025-03-11 07:24,Campaign,T1825944659398705,On/Off Status,a***************v@my.games,Desktop,--,"2025-03-11 07:24: Campaign changed from Paused to Enabled"
+2025-03-11 07:24,Ad group,T1825944659399681,On/Off Status,a***************v@my.games,Desktop,--,"2025-03-11 07:24: Campaign changed from Paused to Enabled"

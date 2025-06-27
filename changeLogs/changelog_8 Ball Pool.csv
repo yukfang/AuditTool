@@ -1,0 +1,40 @@
+Summary of Changes
+Budget changes,3
+Bid changes,0
+Status changes,18
+
+Records
+Time,Object Type,Object ID,Object Name,Operator,Source,App ID,Activity Details
+2025-03-24 15:57,Ad group,T1827296905556002,Budget & Schedule,m**********n@miniclip.com,Desktop,--,"2025-03-24 15:57: Budget changed from b'250.00 USD' to b'170.00 USD'"
+2025-03-24 15:57,Ad group,T1827297127116833,Budget & Schedule,m**********n@miniclip.com,Desktop,--,"2025-03-24 15:57: Budget changed from b'250.00 USD' to b'170.00 USD'"
+2025-03-24 15:57,Ad group,T1827297366752289,Budget & Schedule,m**********n@miniclip.com,Desktop,--,"2025-03-24 15:57: Budget changed from b'250.00 USD' to b'170.00 USD'"
+2025-03-24 08:05,Ad,T1827297129056337,Review Status,TikTok For Business,Platform-generated Change,--,"2025-03-24 08:05: Status changed from b'In review' to b'Approved'"
+2025-03-24 08:05,Ad,T1827296905566226,Review Status,TikTok For Business,Platform-generated Change,--,"2025-03-24 08:05: Status changed from b'In review' to b'Approved'"
+2025-03-24 08:05,Ad,T1827297369585714,Review Status,TikTok For Business,Platform-generated Change,--,"2025-03-24 08:05: Status changed from b'In review' to b'Approved'"
+2025-03-24 08:03,Ad group,T1827297127116833,Review Status,TikTok For Business,Platform-generated Change,--,"2025-03-24 08:03: Review Status changed from b'In review' to b'Approved'"
+2025-03-24 08:03,Ad group,T1827297366752289,Review Status,TikTok For Business,Platform-generated Change,--,"2025-03-24 08:03: Review Status changed from b'In review' to b'Approved'"
+2025-03-24 08:03,Ad group,T1827296905556002,Review Status,TikTok For Business,Platform-generated Change,--,"2025-03-24 08:03: Review Status changed from b'In review' to b'Approved'"
+2025-03-22 12:29,Ad,T1827297369585714,Ad,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:29: Create Ad"
+2025-03-22 12:29,Campaign,T1827297366752257,Campaign,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:29: Create Campaign"
+2025-03-22 12:29,Ad group,T1827297366752289,Ad group,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:29: Create Ad group"
+2025-03-22 12:25,Ad group,T1827297127116833,Ad group,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:25: Create Ad group"
+2025-03-22 12:25,Campaign,T1827297127116817,Campaign,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:25: Create Campaign"
+2025-03-22 12:25,Ad,T1827297129056337,Ad,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:25: Create Ad"
+2025-03-22 12:22,Campaign,T1827296905555986,Campaign,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:22: Create Campaign"
+2025-03-22 12:22,Ad group,T1827296905556002,Ad group,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:22: Create Ad group"
+2025-03-22 12:22,Ad,T1827296905566226,Ad,f***********n@miniclip.com,Desktop,--,"2025-03-22 12:22: Create Ad"
+2025-03-18 11:58,Campaign,T1825212479048801,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825212479048817,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825213920740354,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825214294075538,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825214318498849,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825214300822562,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825214308760594,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Campaign,T1825213920739362,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825214323599458,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Campaign,T1825591825235058,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825591827016737,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-18 11:58,Ad group,T1825660304826450,On/Off Status,m**********n@miniclip.com,Desktop,--,"2025-03-18 11:58: Campaign changed from Paused to Enabled"
+2025-03-17 09:50,Ad group,T1825212479048817,Budget & Schedule,m**********n@miniclip.com,Desktop,--,"2025-03-17 09:50: Schedule changed from b'2025-03-24 00:00:27-2025-03-28 00:00:58' to b'2025-03-18 00:00:27-2025-03-25 00:00:58'"
+2025-03-17 09:50,Ad group,T1825213920740354,Budget & Schedule,m**********n@miniclip.com,Desktop,--,"2025-03-17 09:50: Schedule changed from b'2025-03-24 00:00:59-2025-03-28 00:00:59' to b'2025-03-18 00:00:59-2025-03-25 00:00:59'"
+2025-03-17 09:50,Ad group,T1825660304826450,Budget & Schedule,m**********n@miniclip.com,Desktop,--,"2025-03-17 09:50: Schedule changed from b'2025-03-24 00:00:27-2025-03-28 00:00:58' to b'2025-03-18 00:00:27-2025-03-25 00:00:58'"
