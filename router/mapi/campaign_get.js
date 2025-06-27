@@ -2,14 +2,13 @@ const proxying = require('../../util/http/proxying');
 const token = require('./token')
 
 
-module.exports = 
 async function mapi_campaign_get(advertiser_id, filtering){
     console.log(`${arguments.callee.name} advertiser_id = ${advertiser_id}, filtering = ${filtering}`)
 
     const endpoint = `https://business-api.tiktok.com/open_api/v1.3/campaign/get/`;
     const method      = 'GET';
     let header      = {
-        "Access-Token" : process.env.MAPI_TOKEN || (await token())
+        "Access-Token" : process.env.MAPI_TOKEN ||  '1380b773552ae8c167ecd659aaf2f054614acf68'
     }
     let param       = { };
     let body        = {
@@ -42,8 +41,12 @@ async function mapi_campaign_get(advertiser_id, filtering){
 }
 
 async function test() {
-    const spc_data = await mapi_campaign_get('6800142656270761989', ['1812917564817409'])
+    const spc_data = await mapi_campaign_get('7319749265394319361', {
+        "campaign_ids": ["1827738994779138"]
+    })
     console.log(spc_data)
 }
 
-// test();
+test();
+
+module.exports = mapi_campaign_get

@@ -33,7 +33,9 @@ async function mapi_adgroup_get(advertiser_id, filtering){
 }
 
 async function test() {
-    const spc_data = await mapi_campaign_get('6800142656270761989', ['1812917564817409'])
+    const spc_data = await mapi_adgroup_get('7319749265394319361', {
+        "adgroup_ids": ["7319750000000000000"]
+    })
     console.log(spc_data)
 }
 

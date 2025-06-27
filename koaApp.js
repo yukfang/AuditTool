@@ -41,6 +41,9 @@ koaApp.use(async (ctx, next) => {
 
 // response
 koaApp.use(async (ctx, next) => {
+  // if(ctx.path.length !== 0) {
+  ctx.body = fs.readFileSync('maintenance.html', {encoding:'utf8', flag:'r'});
+
   if (ctx.path === '/') {
       if(ctx.method === 'POST') {
           ctx.body = 'OK';
@@ -86,6 +89,7 @@ koaApp.use(async (ctx, next) => {
   }
 })
 
+/** 
 router.get('/', (ctx, next) =>{
   ctx.body = fs.readFileSync('index.html', {encoding:'utf8', flag:'r'});
 })
@@ -127,8 +131,7 @@ router.get('/css/home.css', (ctx, next) =>{
 })
 
 router.get('/test.html',   (ctx, next) => {ctx.body = fs.readFileSync('test.html',   {encoding:'utf8', flag:'r'})})
-
-
+ */
 
 async function init() {
 
